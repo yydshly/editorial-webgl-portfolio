@@ -24,13 +24,9 @@ domain, and operating ownership remain open.
 
 ## Demo
 
-
 https://github.com/user-attachments/assets/9cf7d8f6-c6c7-4477-93a8-2e4e6fd102af
 
-
-[![Preview of the editorial WebGL demo](docs/demo/editorial-webgl-demo-poster.webp)](docs/demo/editorial-webgl-demo.webm)
-
-[Watch the 1440 x 900 local production-preview recording](docs/demo/editorial-webgl-demo.webm).
+[Download the original 1440 x 900 WebM recording](docs/demo/editorial-webgl-demo.webm).
 The demo is a fictional development experiment using development imagery; it
 does not represent a real person, publisher, ticketing, purchasing, or
 commercial service.

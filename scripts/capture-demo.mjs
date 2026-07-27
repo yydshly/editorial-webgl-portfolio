@@ -54,7 +54,6 @@ async function main() {
   try {
     await page.goto(baseUrl, { waitUntil: "networkidle" });
     await settle(page, 1400);
-    await page.screenshot({ path: path.join(outputDirectory, "editorial-webgl-demo-poster.webp"), type: "webp" });
 
     for (const id of ["media", "manifesto", "about", "news", "quote", "books"]) {
       await scrollToSection(page, id);
