@@ -1233,7 +1233,7 @@ test.describe("Browser Integration Validation", () => {
     await page.goto("/");
 
     await expect(page.getByRole("main")).toBeVisible();
-    await expect(page.getByRole("heading", { name: "Trevor Noah Style Experience" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "DEV-HOST-01 Editorial Archive" })).toBeVisible();
     await expect(page.getByRole("heading", { level: 2, name: "Media" })).toBeVisible();
     await expect(page.locator("section#hero")).toBeVisible();
     await expect(page.locator("section#media")).toBeVisible();
@@ -2046,7 +2046,13 @@ test.describe("Browser Integration Validation", () => {
       await waitForHeroRuntimeReady(page);
 
       const geometry = await getSceneGeometry(page);
-      const snapshot = await seekMediaProgress(page, geometry, 0.44);
+      await seekMediaProgress(page, geometry, 0.44);
+      // CameraIntent uses a damped handoff even after the scroll-derived
+      // Media progress reaches the target. Measure the approved hold only
+      // once the rendered projection, rather than the progress scalar alone,
+      // has settled.
+      await settleFrames(page, 48);
+      const snapshot = await getProbeSnapshot(page);
       const main = snapshot.composition?.media.main;
       const secondary = snapshot.composition?.media.secondary;
       expect(main).toBeDefined();
@@ -2750,7 +2756,7 @@ test.describe("Browser Integration Validation", () => {
     await page.goto("/");
 
     await expect(page.getByText(/WebGL stage disabled/)).toBeVisible();
-    await expect(page.getByRole("heading", { name: "Trevor Noah Style Experience" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "DEV-HOST-01 Editorial Archive" })).toBeVisible();
     await expect(page.getByRole("heading", { level: 2, name: "Media" })).toBeVisible();
     await expect(page.locator("section#hero")).toBeVisible();
     await expect(page.locator("section#media")).toBeVisible();

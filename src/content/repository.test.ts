@@ -107,7 +107,7 @@ describe("content repository", () => {
   it("returns full site payload metadata", () => {
     const site = getSiteContent();
     expect(site.locale).toBe("en");
-    expect(site.brand.domain).toContain("trevornoah");
+    expect(site.brand.domain).toBe("dev-host-01.example");
     expect(site.nav).toHaveLength(7);
   });
 

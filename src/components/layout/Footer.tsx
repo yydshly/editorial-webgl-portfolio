@@ -1,28 +1,17 @@
-import Link from "next/link";
-
-type FooterLink = {
-  readonly label: string;
-  readonly href: string;
-};
-
 type FooterProps = {
   readonly brandName: string;
-  readonly footerLinks: readonly FooterLink[];
 };
 
-export default function Footer({ brandName, footerLinks }: FooterProps) {
+export default function Footer({ brandName }: FooterProps) {
   return (
     <footer className="site-footer">
       <p className="site-footer__brand">{brandName}</p>
-      <ul className="site-footer__links" aria-label="Footer links">
-        {footerLinks.map((link) => (
-          <li key={link.label}>
-            <Link href={link.href}>{link.label}</Link>
-          </li>
-        ))}
-      </ul>
+      <p className="site-footer__note">
+        Fictional development archive. No public contact, ticketing, or sales
+        routes are published here.
+      </p>
       <p className="site-footer__copyright">
-        © {new Date().getFullYear()} {brandName}. All rights reserved.
+        © {new Date().getFullYear()} {brandName}. Development use only.
       </p>
     </footer>
   );

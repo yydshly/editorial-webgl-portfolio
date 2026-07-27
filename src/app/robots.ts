@@ -5,9 +5,9 @@ export default function robots(): MetadataRoute.Robots {
     rules: [
       {
         userAgent: "*",
-        allow: "/",
+        disallow: "/",
       },
     ],
-    sitemap: "https://www.trevornoah.com/sitemap.xml",
+    sitemap: "https://dev-host-01.example/sitemap.xml",
   };
 }

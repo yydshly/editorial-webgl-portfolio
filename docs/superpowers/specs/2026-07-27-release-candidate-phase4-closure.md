@@ -284,3 +284,45 @@ The isolated no-omission result is `76 discovered / 69 passed / 0 failed / 7
 explicit opt-in skips / 0 omitted`. The preload-only reverse lifecycle remains
 an independent Minor debt. Next: **RC-02 Full-site visual, navigation, SEO,
 and accessibility validation**; merge and deployment remain unauthorized.
+
+## 13. RC-02 engineering/audit result
+
+RC-02 resolves the discovered navigation, SEO, and accessibility audit
+findings while preserving every locked runtime boundary. The 32-cell matrix is
+captured at `1440x900`, `1024x900`, `800x900`, and `390x844` for slow/fast
+forward and reverse, continuous scroll, reduced motion, WebGL unavailable,
+and context loss/restore.
+
+The canonical ignored evidence index is
+`artifacts/release-candidate/rc02/artifact-manifest.json`. Context recovery is
+fallback-first and returns to one Canvas at every viewport; the recordings are
+verified as `1440x900` Desktop and `390x844` Mobile without letterboxing.
+
+The fictional development identity is now consistently `DEV-HOST-01`, with
+noindex/nofollow metadata, a canonical development origin, DOM-complete
+fallback, anchor-only live actions, a focusable skip target, labelled sections,
+disabled development CTAs, image alternatives, and an accessible-hidden Canvas.
+No real-person, ISBN, publisher, sales, contact, or ticketing metadata is
+published.
+
+The only responsive geometry change is a 2px Mobile Books clearance below the
+sticky header. The Mobile Media hard-exposure test keeps its former product
+range and instead waits for the damped CameraIntent projection to settle.
+
+Fresh final engineering result:
+
+```text
+lint: 0 errors / 0 warnings
+typecheck: pass
+unit: 50 files / 303 tests passed
+build: pass
+RC E2E: 83 discovered / 76 passed / 0 failed / 7 explicit opt-in skipped / 0 omitted
+```
+
+There are zero confirmed functional or non-evidence E2E blockers. RC-02
+received explicit temporary release-owner human visual sign-off on 2026-07-27.
+Later visual refinement is deferred and may be reopened as needed, without
+reopening RC-02. RC-03 is now authorized for performance budgets and formal
+production asset/licensing replacement. RC-03 does not authorize a merge or
+deployment; the shared development portrait and development Books covers remain
+asset-review work, not Scene regressions.

@@ -3,8 +3,12 @@
 ## 1. Current status
 
 - Current phase: Release Candidate / Phase 4 Closure.
-- Current task completed: RC-01 Media Product Defect Repair & E2E Semantic Alignment.
-- Current decision gate: RC-02 full-site visual, navigation, SEO, and accessibility validation.
+- RC-02: temporarily approved through explicit release-owner human visual
+  sign-off on 2026-07-27. Deferred visual refinements may be reopened only as
+  needed; they do not reopen RC-02 now.
+- Current entry: RC-03 Performance, production assets, and deployment
+  readiness. RC-03 remains a readiness phase: it does not authorize a merge or
+  deployment.
 - P4-03 About Scene: implemented, verified, human-signed, and closed.
 - P4-04 product direction: approved.
 - P4-04 Batch 1: content/DOM, manifest, development assets, and pure progress/motion implemented.
@@ -538,3 +542,52 @@ unchanged.
 
 Next entry: **RC-02 Full-site visual, navigation, SEO, and accessibility
 validation**. Do not merge or deploy in RC-02 without separate authority.
+
+## 16. RC-02 engineering and audit closure
+
+RC-02 completes the full-site engineering/audit pass. The release owner still
+must give final human visual sign-off before RC-03 starts; this record does not
+mark the site deployable.
+
+Resolved audit findings:
+
+- development metadata, canonical, Open Graph, Twitter card, robots, sitemap,
+  brand copy, and app landmark now identify the fictional `DEV-HOST-01`
+  archive; no real-person identity, ISBN, publisher, commerce, or ticketing
+  metadata is published;
+- all live local CTAs now resolve to real in-page anchors, dead footer routes
+  are removed, the development Books CTA is a disabled native button, and the
+  skip link transfers focus to the main landmark;
+- every content section has an accessible heading relationship, images retain
+  alternatives, Canvas remains `aria-hidden`, and `/icon.svg` prevents the
+  browser favicon 404;
+- Mobile Books now reserves an additional 2px before the cover stage so it
+  clears the sticky header; the accepted Books hierarchy is unchanged;
+- the Mobile Media exposure assertion now waits for the real damped
+  CameraIntent projection to settle before retaining its existing hard
+  exposure/focal/overflow gates. No Media composition value was changed.
+
+Browser evidence is ignored and indexed in
+`artifacts/release-candidate/rc02/artifact-manifest.json`. It contains all 32
+viewport/mode cells, representative composited screenshots, four correctly
+sized recordings, metadata/accessibility/console audits, and lifecycle/resource
+matrix data. Context loss/restore succeeds at all four viewports with fallback
+visible on loss and one Canvas restored afterward.
+
+Fresh verification:
+
+- `pnpm lint`: 0 errors / 0 warnings;
+- `pnpm typecheck`: pass;
+- `pnpm test`: 50 files / 303 tests passed;
+- `pnpm build`: pass;
+- `pnpm test:e2e:rc`: `83 discovered / 76 passed / 0 failed / 7 explicit
+  opt-in skipped / 0 omitted`.
+
+There are zero confirmed functional or non-evidence E2E blockers. RC-02
+received explicit temporary human visual approval on 2026-07-27; later visual
+refinements are deferred and may be addressed on demand. Deferred RC-03 release
+gates are production asset replacement/licensing review and performance
+budgets. The current
+development portrait is reused by Hero, Media, and About, and the Books covers
+remain development studies; this can read as visually repetitive and requires
+asset replacement rather than another Scene redesign.

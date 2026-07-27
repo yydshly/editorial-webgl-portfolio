@@ -74,7 +74,8 @@ export default function HomePage() {
     <main
       id="site-content"
       className="site-main"
-      aria-label="Trevor Noah style website prototype shell"
+      aria-label="DEV-HOST-01 development editorial archive"
+      tabIndex={-1}
     >
       <SectionMotionController />
       {sections.map(renderSection)}

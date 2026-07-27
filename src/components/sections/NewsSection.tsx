@@ -7,8 +7,14 @@ type NewsSectionProps = {
 };
 
 export default function NewsSection({ section }: NewsSectionProps) {
+  const headingId = `${section.id}-heading`;
+
   return (
-    <section id={section.id} className="section section-surface news-section">
+    <section
+      id={section.id}
+      className="section section-surface news-section"
+      aria-labelledby={headingId}
+    >
       <div
         className="section-motion-visual"
         data-motion="reveal"
@@ -16,17 +22,13 @@ export default function NewsSection({ section }: NewsSectionProps) {
       >
         <div className="section-head">
           <p className="eyebrow">News</p>
-          <h2>{section.title}</h2>
+          <h2 id={headingId}>{section.title}</h2>
         </div>
         <div className="news-list">
           {section.posts.map((post) => (
             <article key={post.title} className="news-item">
               <time dateTime={post.date}>{post.date}</time>
-              <h3>
-                <UIButton href={post.href} variant="subtle" size="sm">
-                  {post.title}
-                </UIButton>
-              </h3>
+              <h3>{post.title}</h3>
               <p>{post.summary}</p>
             </article>
           ))}

@@ -274,6 +274,44 @@ remains intact.
 The next phase is **RC-02 Full-site visual, navigation, SEO, and accessibility
 validation**. It must not create a new scene, merge `main`, or deploy.
 
+## RC-02 engineering/audit closure and conditional RC-03 entry
+
+RC-02 resolves the full-site navigation, SEO, accessibility, responsive, and
+browser-evidence work without changing the locked one Canvas / one Renderer /
+one Camera / one RAF Three.js runtime.
+
+- Navigation is anchor-only for live actions; all seven targets exist in DOM
+  order, keyboard activation updates the hash, the mobile menu closes on
+  navigation, and the skip link focuses `main`.
+- The fictional development identity is consistently `DEV-HOST-01`; metadata
+  uses `https://dev-host-01.example`, noindex/nofollow robots, canonical and
+  social metadata, and a declared app icon. No real-person commerce or
+  publication metadata remains.
+- Semantic sections are labelled, Canvas is `aria-hidden`, images have alt
+  text, Books development CTAs are disabled buttons, and DOM content remains
+  complete with WebGL unavailable.
+- The 32-cell `1440 / 1024 / 800 / 390` browser matrix records zero horizontal
+  overflow, legal `global-idle` intervals, grouped fallback, resource owners,
+  and context-loss/restore fallback-first recovery.
+- Mobile Books gains a 2px sticky-header clearance. The Media hard projection
+  gate is sampled after the actual damped camera projection settles; exposure,
+  focal containment, text non-overlap, and overflow requirements are unchanged.
+
+Fresh gates are `lint 0 warnings`, typecheck pass, `303` unit tests pass,
+production build pass, and `83 discovered / 76 passed / 0 failed / 7 opt-in
+skipped / 0 omitted` for the isolated RC E2E runner.
+
+Evidence lives under ignored `artifacts/release-candidate/rc02/`. It includes
+four full-route recordings at their actual target dimensions, per-section
+screenshots, matrix JSON, metadata/accessibility/console audit JSON, and the
+artifact manifest.
+
+RC-02 received explicit temporary release-owner human visual sign-off on
+2026-07-27. Any later visual refinement is deferred and can be reopened as
+needed; it does not reopen RC-02 now. RC-03 is now authorized as the next
+phase: performance budgets, production asset/license manifest, and deployment
+readiness only. RC-03 does not authorize a merge or deployment.
+
 ## Superseded P4-04 Batch 1 entry (historical)
 
 The following Batch 1 instructions are retained only as phase history and are

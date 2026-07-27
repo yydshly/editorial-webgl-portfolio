@@ -7,10 +7,13 @@ type ManifestoSectionProps = {
 };
 
 export default function ManifestoSection({ section }: ManifestoSectionProps) {
+  const headingId = `${section.id}-heading`;
+
   return (
     <section
       id={section.id}
       className="section section-surface manifesto-section"
+      aria-labelledby={headingId}
     >
       <div
         className="section-motion-visual"
@@ -20,7 +23,7 @@ export default function ManifestoSection({ section }: ManifestoSectionProps) {
       >
         <div className="section-head">
           <p className="eyebrow">Manifesto</p>
-          <h2>{section.title}</h2>
+          <h2 id={headingId}>{section.title}</h2>
         </div>
         <p className="lead">{section.lead}</p>
         <ul className="manifesto-list">

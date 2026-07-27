@@ -318,5 +318,29 @@ Phase 4 Closure is complete only when:
 - [x] Verify `76 discovered / 69 passed / 0 failed / 7 explicit opt-in skips /
   0 omitted`.
 
-**Next executable plan section: RC-02.** Do not begin performance, SEO,
-accessibility, deployment, or another spatial chapter as part of RC-01.
+**RC-01 historical next section:** RC-02. Do not treat this retained RC-01
+record as authorization to begin performance, deployment, or another spatial
+chapter.
+
+## RC-02 completion record
+
+- [x] Execute the 32-cell full-site browser matrix and generate the ignored
+  artifact manifest, screenshots, recordings, lifecycle/resource matrix, and
+  metadata/accessibility/console audits under `artifacts/release-candidate/rc02/`.
+- [x] Replace stale real-person/dead-route development metadata and UI copy
+  with the explicitly fictional `DEV-HOST-01` archive identity.
+- [x] Validate navigation targets, hashes, keyboard operation, mobile menu,
+  skip-link focus, disabled Books CTAs, landmarks, heading relationships,
+  image alternatives, no-WebGL DOM availability, and responsive overflow.
+- [x] Add the declared application icon and resolve the browser favicon 404.
+- [x] Keep the Books stage clear of the sticky mobile header and sample Mobile
+  Media exposure after camera projection settlement without weakening its
+  product gates.
+- [x] Verify lint, typecheck, unit, build, and no-omission RC E2E:
+  `83 discovered / 76 passed / 0 failed / 7 opt-in skipped / 0 omitted`.
+
+**Next executable plan section: RC-03.** Explicit temporary release-owner
+human visual sign-off was received on 2026-07-27. Later visual refinement is
+deferred and may be reopened as needed. Begin performance budgets, production
+asset/licensing replacement, and deployment-readiness work only; do not merge
+or deploy.

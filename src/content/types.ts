@@ -95,7 +95,6 @@ export interface NewsSection extends BaseSection<"news"> {
     readonly date: string;
     readonly title: string;
     readonly summary: string;
-    readonly href: string;
   }[];
 }
 

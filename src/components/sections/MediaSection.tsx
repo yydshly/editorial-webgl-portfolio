@@ -8,10 +8,13 @@ type MediaSectionProps = {
 };
 
 export default function MediaSection({ section }: MediaSectionProps) {
+  const headingId = `${section.id}-heading`;
+
   return (
     <section
       id={section.id}
       className="section section-surface media-section"
+      aria-labelledby={headingId}
     >
       <div
         className="section-motion-visual"
@@ -23,7 +26,7 @@ export default function MediaSection({ section }: MediaSectionProps) {
         <div className="media-reading" data-media-reading="true">
           <div className="section-head">
             <p className="eyebrow">Media</p>
-            <h2 data-media-title="true">{section.title}</h2>
+            <h2 id={headingId} data-media-title="true">{section.title}</h2>
           </div>
           <p data-media-body="true">{section.description}</p>
           <div className="section-cta-row">
