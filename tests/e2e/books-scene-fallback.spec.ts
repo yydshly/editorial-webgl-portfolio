@@ -200,9 +200,9 @@ async function waitForProbe(page: Page): Promise<void> {
         () =>
           typeof (
             window as unknown as {
-              __trevorNoahWebGLProbe?: { snapshot(): unknown };
+              __editorialWebGLProbe?: { snapshot(): unknown };
             }
-          ).__trevorNoahWebGLProbe?.snapshot === "function",
+          ).__editorialWebGLProbe?.snapshot === "function",
       ),
     )
     .toBe(true);
@@ -251,12 +251,12 @@ async function collectRestorationFrames(
   return page.evaluate(async () => {
     const runtimeWindow = window as Window & {
       __booksContextLoss?: ContextLossExtension;
-      __trevorNoahWebGLProbe?: {
+      __editorialWebGLProbe?: {
         snapshot(): BooksProbeSnapshot;
       };
     };
     const extension = runtimeWindow.__booksContextLoss;
-    const probe = runtimeWindow.__trevorNoahWebGLProbe;
+    const probe = runtimeWindow.__editorialWebGLProbe;
     if (!extension || !probe) {
       throw new Error("Books restoration evidence dependencies are unavailable.");
     }

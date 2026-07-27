@@ -312,6 +312,29 @@ needed; it does not reopen RC-02 now. RC-03 is now authorized as the next
 phase: performance budgets, production asset/license manifest, and deployment
 readiness only. RC-03 does not authorize a merge or deployment.
 
+## RC-03 release-readiness start
+
+RC-03 is active on `feat/rc03-release-readiness`. Production build and isolated
+HTTP smoke have passed; asset/licensing, production security policy, debug
+exposure, and remaining production browser smoke gates remain open. Do not
+reopen the signed Scene compositions, merge `main`, or deploy.
+
+## RC-03B production asset, identity, and operations sign-off
+
+RC-03B records the locked fictional public position, the Demo RC/Public
+Production boundary, the complete asset evidence ledger, and the dry-run
+deployment responsibilities. Demo RC is permitted only as a disclosed,
+noindex/nofollow local or controlled preview. Public Production remains
+blocked until formal assets and rights, real domain/host approval, monitoring,
+rollback ownership, production social art, and robots/index approval are
+complete. See `docs/release/` for the authoritative checklist, inventory,
+positioning, and runbook.
+
+Next phase: **RC-04 final regression and release decision preparation**. RC-04
+may verify the locked technical baseline and collect owner approvals; it may
+not modify Hero, Media, About, Books composition, Runtime, Camera,
+SceneDirector, or Renderer, and it may not merge or deploy.
+
 ## Superseded P4-04 Batch 1 entry (historical)
 
 The following Batch 1 instructions are retained only as phase history and are
@@ -325,3 +348,10 @@ P4-04 Batch 1 starts at Task 1 of the implementation plan:
 4. continue in strict RED → GREEN → Refactor order.
 
 Do not start `BooksScene`, renderer, CameraIntent, or `SceneDirector` work before Tasks 1–4 have produced DOM content, a validated manifest, real development covers, and pure progress/motion functions.
+## RC-03A technical hardening result
+
+The public asset boundary, legacy brand placeholders, production diagnostics,
+security headers, browser source-map policy, and environment-based site URL are
+hardened. The isolated production browser matrix passed. RC-03B is limited to
+asset provenance/licensing, public identity/domain, and host operational
+readiness; it must not change signed Scene composition.

@@ -7,8 +7,10 @@ export default function Footer({ brandName }: FooterProps) {
     <footer className="site-footer">
       <p className="site-footer__brand">{brandName}</p>
       <p className="site-footer__note">
-        Fictional development archive. No public contact, ticketing, or sales
-        routes are published here.
+        Fictional development archive. DEV-HOST-01 is not a real person, and
+        FIELD NOTES are concept publications. No public contact, ticketing,
+        purchasing, publishing, or person-related commercial service is
+        offered here.
       </p>
       <p className="site-footer__copyright">
         © {new Date().getFullYear()} {brandName}. Development use only.

@@ -326,3 +326,37 @@ reopening RC-02. RC-03 is now authorized for performance budgets and formal
 production asset/licensing replacement. RC-03 does not authorize a merge or
 deployment; the shared development portrait and development Books covers remain
 asset-review work, not Scene regressions.
+## 14. RC-03A technical release hardening
+
+RC-03A is complete for the technical release boundary: legacy public branding
+was removed; non-runtime master/source assets no longer deploy from `public`;
+production diagnostics are opt-in; URL resolution is environment-based with a
+safe development fallback; CSP and supporting security headers apply in
+production; browser source maps are disabled; and the production browser smoke
+matrix passed. These changes preserve all signed Scene contracts.
+
+The project may continue to RC-03B asset and authorization adjudication as a
+noindex demonstration RC. It remains blocked from public production by missing
+asset provenance/rights, an approved public domain/social asset, and host
+operational approval.
+
+## 15. RC-03B production identity, assets, and operations
+
+RC-03B is a sign-off/documentation phase only. The approved external statement
+is that this is a fictional character-brand and DOM-first WebGL
+spatial-narrative experiment. `DEV-HOST-01`, its timeline, and the three FIELD
+NOTES books are fictional/concept content; no real purchasing, ticketing,
+publishing, awards, or person-related commercial service exists.
+
+The Demo RC may run locally, privately, or behind a password with the
+disclosure and noindex/nofollow policy. Public Production is a separate gate
+requiring asset provenance and commercial-use evidence, releases, approved
+identity/OG, real domain and host operations, monitoring, rollback, emergency
+ownership, privacy/copyright approval, and robots/index reapproval. Missing
+evidence is recorded as `unknown / not approved`, never inferred.
+
+The authoritative records are `docs/release/release-positioning.md`,
+`production-asset-inventory.md`, `release-checklist.md`, and
+`deployment-runbook.md`. RC-04 is limited to final regression, owner decision
+capture, and release-boundary verification; it does not authorize Scene or
+runtime redesign, merge, or deployment.

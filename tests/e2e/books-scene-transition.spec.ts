@@ -246,8 +246,8 @@ async function waitForProbe(
           page.evaluate(
             () =>
               typeof (window as unknown as {
-                __trevorNoahWebGLProbe?: { snapshot(): unknown };
-              }).__trevorNoahWebGLProbe?.snapshot === "function",
+                __editorialWebGLProbe?: { snapshot(): unknown };
+              }).__editorialWebGLProbe?.snapshot === "function",
           ),
         { timeout: 10_000 },
       )
@@ -273,8 +273,8 @@ async function waitForProbe(
 async function readProbe(page: Page): Promise<BooksTransitionProbe> {
   return page.evaluate(() => {
     const probe = (window as unknown as {
-      __trevorNoahWebGLProbe?: { snapshot(): BooksTransitionProbe };
-    }).__trevorNoahWebGLProbe;
+      __editorialWebGLProbe?: { snapshot(): BooksTransitionProbe };
+    }).__editorialWebGLProbe;
     if (!probe) {
       throw new Error("WebGL probe is unavailable.");
     }

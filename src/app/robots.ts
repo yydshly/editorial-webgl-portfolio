@@ -1,4 +1,5 @@
-﻿import type { MetadataRoute } from "next";
+import type { MetadataRoute } from "next";
+import { resolveSiteUrl } from "@/lib/site/siteUrl";
 
 export default function robots(): MetadataRoute.Robots {
   return {
@@ -8,6 +9,6 @@ export default function robots(): MetadataRoute.Robots {
         disallow: "/",
       },
     ],
-    sitemap: "https://dev-host-01.example/sitemap.xml",
+    sitemap: new URL("/sitemap.xml", resolveSiteUrl()).toString(),
   };
 }

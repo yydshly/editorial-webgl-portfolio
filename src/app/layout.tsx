@@ -6,11 +6,13 @@ import ExperienceRoot from "@/components/webgl/ExperienceRoot";
 import RuntimeProvider from "@/lib/motion/RuntimeProvider";
 import LenisProvider from "@/lib/scroll/LenisProvider";
 import { getSiteContent } from "@/content";
+import { resolveSiteUrl } from "@/lib/site/siteUrl";
 
 const { brand, seo } = getSiteContent();
+const siteUrl = resolveSiteUrl();
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://dev-host-01.example"),
+  metadataBase: siteUrl,
   title: {
     default: seo.title,
     template: `${seo.title} | %s`,
@@ -30,7 +32,7 @@ export const metadata: Metadata = {
     title: seo.title,
     description: seo.description,
     type: "website",
-    url: "https://dev-host-01.example/",
+    url: siteUrl,
     siteName: brand.name,
     locale: "en_US",
     images: [

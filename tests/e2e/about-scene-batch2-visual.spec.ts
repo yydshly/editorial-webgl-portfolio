@@ -259,8 +259,8 @@ function assertStageEvidence(
 async function waitForAboutRuntime(page: Page): Promise<void> {
   await page.waitForFunction(() => {
     const probe = (window as unknown as {
-      __trevorNoahWebGLProbe?: { snapshot: () => AboutProbeSnapshot };
-    }).__trevorNoahWebGLProbe;
+      __editorialWebGLProbe?: { snapshot: () => AboutProbeSnapshot };
+    }).__editorialWebGLProbe;
     const snapshot = probe?.snapshot();
     const scene = snapshot?.diagnostics.sceneSnapshots["about-scene"];
     // Director preloading intentionally leaves About dormant until the later
@@ -336,8 +336,8 @@ async function seekAndReadEvidence(
 
   return page.evaluate((requested) => {
     const probe = (window as unknown as {
-      __trevorNoahWebGLProbe?: { snapshot: () => AboutProbeSnapshot };
-    }).__trevorNoahWebGLProbe;
+      __editorialWebGLProbe?: { snapshot: () => AboutProbeSnapshot };
+    }).__editorialWebGLProbe;
     const snapshot = probe?.snapshot();
     const scene = snapshot?.diagnostics.sceneSnapshots["about-scene"];
     const composition = snapshot?.composition?.about;
@@ -433,8 +433,8 @@ function intersectionAreaInViewport(
 async function getProbeSnapshot(page: Page): Promise<AboutProbeSnapshot> {
   return page.evaluate(() => {
     const probe = (window as unknown as {
-      __trevorNoahWebGLProbe?: { snapshot: () => AboutProbeSnapshot };
-    }).__trevorNoahWebGLProbe;
+      __editorialWebGLProbe?: { snapshot: () => AboutProbeSnapshot };
+    }).__editorialWebGLProbe;
     if (!probe) throw new Error("WebGL probe is unavailable.");
     return probe.snapshot();
   });

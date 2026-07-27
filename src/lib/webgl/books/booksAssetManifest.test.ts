@@ -24,7 +24,7 @@ const coverFixtures = {
     visualSubject: "person-led",
     masterSemanticId: "field-notes:people-in-the-room:v1",
     source: {
-      path: "/assets/books/people-in-the-room-master.png",
+      path: "/assets-source/books/people-in-the-room-master.png",
       width: 1200,
       height: 1800,
     },
@@ -55,7 +55,7 @@ const coverFixtures = {
     visualSubject: "scene-led",
     masterSemanticId: "field-notes:between-the-cities:v1",
     source: {
-      path: "/assets/books/between-the-cities-master.png",
+      path: "/assets-source/books/between-the-cities-master.png",
       width: 1200,
       height: 1800,
     },
@@ -86,7 +86,7 @@ const coverFixtures = {
     visualSubject: "relationship-led",
     masterSemanticId: "field-notes:hearing-one-another:v1",
     source: {
-      path: "/assets/books/hearing-one-another-master.png",
+      path: "/assets-source/books/hearing-one-another-master.png",
       width: 1200,
       height: 1800,
     },
@@ -128,10 +128,11 @@ function validManifest() {
 
 describe("Books asset manifest", () => {
   it("packages nine decodable development cover files at their declared dimensions", async () => {
-    const publicDirectory = path.resolve(
+    const projectDirectory = path.resolve(
       path.dirname(fileURLToPath(import.meta.url)),
-      "../../../../public",
+      "../../../..",
     );
+    const publicDirectory = path.join(projectDirectory, "public");
     const assets = booksAssetManifest.covers.flatMap((cover) => [
       { ...cover.source, expectedFormat: "png" },
       { ...cover.desktop, expectedFormat: "webp" },
@@ -143,7 +144,10 @@ describe("Books asset manifest", () => {
     expect(assets).toHaveLength(9);
 
     for (const asset of assets) {
-      const absolutePath = path.join(publicDirectory, asset.path);
+      const assetRoot = asset.path.startsWith("/assets-source/")
+        ? projectDirectory
+        : publicDirectory;
+      const absolutePath = path.join(assetRoot, asset.path);
       expect(existsSync(absolutePath), absolutePath).toBe(true);
       await expect(sharp(absolutePath).metadata()).resolves.toMatchObject({
         width: asset.width,
@@ -218,7 +222,7 @@ describe("Books asset manifest", () => {
     for (const cover of manifest.covers) {
       expect([cover.source, cover.desktop, cover.mobile].map((asset) => [
         asset.width / asset.height,
-        asset.path.startsWith("/assets/books/"),
+        asset.path.startsWith("/assets-source/books/") || asset.path.startsWith("/assets/books/"),
       ])).toEqual([
         [2 / 3, true],
         [2 / 3, true],

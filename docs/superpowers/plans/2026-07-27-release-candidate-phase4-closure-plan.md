@@ -344,3 +344,33 @@ human visual sign-off was received on 2026-07-27. Later visual refinement is
 deferred and may be reopened as needed. Begin performance budgets, production
 asset/licensing replacement, and deployment-readiness work only; do not merge
 or deploy.
+## RC-03A completion record
+
+- [x] Remove public legacy placeholder branding and verify the 1200x630
+  DEV-HOST-01 fictional-development OG asset.
+- [x] Move generation-only master/source assets outside `public` without
+  changing runtime WebP references or signed Scene contracts.
+- [x] Gate runtime probe/log diagnostics outside default production globals.
+- [x] Add production URL fallback, security headers, and browser source-map
+  policy.
+- [x] Run isolated `next start` browser smoke at 1440, 1024, 800, and 390
+  widths across normal/reverse/fast/reduced/fallback/context-restore modes.
+
+**Next executable plan section: RC-03B asset and authorization adjudication.**
+It must record evidence and release decisions, not claim commercial rights or
+deploy the project.
+
+## RC-03B completion record
+
+- [x] Lock the fictional DEV-HOST-01 identity and external disclosure wording.
+- [x] Create the production asset inventory with explicit unknown/not-approved
+  rights states, release evidence, replacement owners, and Demo RC/Public
+  Production decisions.
+- [x] Define the two release gates and the dry-run deployment/operations
+  responsibilities without inventing a domain, host, monitor, or owner.
+- [x] Preserve noindex/nofollow, production diagnostics isolation, source-map
+  policy, and the RC-03A technical baseline.
+
+**Next executable plan section: RC-04 final regression and release decision
+preparation.** It may collect approvals and verify the locked baseline only;
+it must not reopen signed Scene composition or authorize deployment.

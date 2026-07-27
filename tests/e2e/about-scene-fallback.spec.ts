@@ -85,7 +85,7 @@ test.describe("P4-03 About fallback contract", () => {
     const restorationFrames = await page.evaluate(async () => {
       const runtimeWindow = window as Window & {
         __aboutFallbackContextLoss?: ContextLossExtension;
-        __trevorNoahWebGLProbe?: {
+        __editorialWebGLProbe?: {
           snapshot(): {
             diagnostics: {
               assetOwnerCounts: Readonly<Record<string, number>>;
@@ -102,7 +102,7 @@ test.describe("P4-03 About fallback contract", () => {
       const timeline = document.querySelector<HTMLElement>(".about-timeline");
       if (
         !runtimeWindow.__aboutFallbackContextLoss ||
-        !runtimeWindow.__trevorNoahWebGLProbe ||
+        !runtimeWindow.__editorialWebGLProbe ||
         !image ||
         !timeline
       ) {
@@ -112,7 +112,7 @@ test.describe("P4-03 About fallback contract", () => {
       const samples: RestorationFrameSample[] = [];
       const sample = (): RestorationFrameSample => {
         const diagnostics =
-          runtimeWindow.__trevorNoahWebGLProbe!.snapshot().diagnostics;
+          runtimeWindow.__editorialWebGLProbe!.snapshot().diagnostics;
         return {
           fallbackState: image.dataset.aboutFallbackState ?? null,
           fallbackOpacity: getComputedStyle(image).opacity,
@@ -217,7 +217,7 @@ async function captureMobileContextEvidence(page: Page): Promise<void> {
 async function waitForProbe(page: Page): Promise<void> {
   await expect.poll(async () => page.evaluate(() =>
     typeof (window as unknown as {
-      __trevorNoahWebGLProbe?: { snapshot(): unknown };
-    }).__trevorNoahWebGLProbe?.snapshot === "function",
+      __editorialWebGLProbe?: { snapshot(): unknown };
+    }).__editorialWebGLProbe?.snapshot === "function",
   )).toBe(true);
 }

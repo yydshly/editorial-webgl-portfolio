@@ -57,7 +57,7 @@ async function waitForFrames(page, count = 4) {
 
 async function readSnapshot(page) {
   return page.evaluate((ids) => {
-    const probe = window.__trevorNoahWebGLProbe;
+    const probe = window.__editorialWebGLProbe;
     const snapshot = typeof probe?.snapshot === "function" ? probe.snapshot() : null;
     const fallbackImages = Array.from(document.querySelectorAll("img[data-media-fallback], img[data-about-fallback], img[data-books-fallback]"));
 

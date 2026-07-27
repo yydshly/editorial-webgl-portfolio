@@ -305,8 +305,8 @@ async function preparePage(page: Page, canvasOnly: boolean): Promise<void> {
 async function waitForProbe(page: Page): Promise<void> {
   await page.waitForFunction(() => {
     const probe = (window as unknown as {
-      __trevorNoahWebGLProbe?: { snapshot?: () => unknown };
-    }).__trevorNoahWebGLProbe;
+      __editorialWebGLProbe?: { snapshot?: () => unknown };
+    }).__editorialWebGLProbe;
     return typeof probe?.snapshot === "function";
   });
 }
@@ -314,8 +314,8 @@ async function waitForProbe(page: Page): Promise<void> {
 async function getProbeSnapshot(page: Page): Promise<RuntimeProbeSnapshot> {
   return page.evaluate(() => {
     const probe = (window as unknown as {
-      __trevorNoahWebGLProbe?: { snapshot: () => RuntimeProbeSnapshot };
-    }).__trevorNoahWebGLProbe;
+      __editorialWebGLProbe?: { snapshot: () => RuntimeProbeSnapshot };
+    }).__editorialWebGLProbe;
     if (!probe) {
       throw new Error("WebGL probe is not available.");
     }

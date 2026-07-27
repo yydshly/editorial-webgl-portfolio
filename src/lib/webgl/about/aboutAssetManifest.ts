@@ -72,8 +72,11 @@ function requireAssetPath(record: UnknownRecord, path: string): string {
   }
 
   const escapesAboutDirectory = decodedPath.includes("\\") || decodedPath.split("/").some((segment) => segment === "." || segment === "..");
-  if (!decodedPath.startsWith("/assets/about/") || escapesAboutDirectory) {
-    throw new Error(`About asset manifest ${path}.path must stay inside /assets/about/.`);
+  if (
+    !(decodedPath.startsWith("/assets/about/") || decodedPath.startsWith("/assets-source/about/")) ||
+    escapesAboutDirectory
+  ) {
+    throw new Error(`About asset manifest ${path}.path must stay inside the approved About asset directories.`);
   }
 
   return assetPath;

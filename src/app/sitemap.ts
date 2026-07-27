@@ -1,11 +1,12 @@
-﻿import type { MetadataRoute } from "next";
+import type { MetadataRoute } from "next";
+import { resolveSiteUrl } from "@/lib/site/siteUrl";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = "https://dev-host-01.example";
+  const baseUrl = resolveSiteUrl();
 
   return [
     {
-      url: `${baseUrl}/`,
+      url: new URL("/", baseUrl).toString(),
       lastModified: new Date(),
       changeFrequency: "daily",
       priority: 1,

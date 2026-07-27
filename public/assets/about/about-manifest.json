@@ -5,7 +5,7 @@
   "assetAvailability": "packaged",
   "mobileBreakpoint": 768,
   "master": {
-    "path": "/assets/about/about-portrait-master.png",
+    "path": "/assets-source/about/about-portrait-master.png",
     "width": 1122,
     "height": 1402
   },

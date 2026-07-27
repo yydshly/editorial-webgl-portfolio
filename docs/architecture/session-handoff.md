@@ -591,3 +591,54 @@ budgets. The current
 development portrait is reused by Hero, Media, and About, and the Books covers
 remain development studies; this can read as visually repetitive and requires
 asset replacement rather than another Scene redesign.
+
+## 17. RC-03 release-readiness start
+
+RC-03 started on branch `feat/rc03-release-readiness` from `c8092b4`. The
+locked Hero, Media, About, and Books compositions are out of scope. Production
+build passed on 2026-07-27 with five static routes and 1.37 MB emitted static
+JavaScript, 18.5 KB CSS, and 26.78 MB of public assets (including non-runtime
+PNG masters). Isolated production HTTP smoke passed for `/`, robots, sitemap,
+icon, OG asset, and a 404. Evidence is ignored under
+`artifacts/release-candidate/rc03/`.
+
+Open release gates are recorded in `docs/release/`: asset provenance and
+releases, legacy social placeholder text, removal of public non-runtime source
+assets, security-header/source-map policy, debug-global production gating, and
+the remaining browser production smoke matrix. These are not Scene regressions.
+## 18. RC-03A technical release hardening
+
+RC-03A removed public legacy-brand placeholder text, moved five non-runtime PNG
+masters from `public` to `assets-source`, and moved ignored generation copies
+out of the public tree. Public deployment bytes fell from 26,778,470 B to
+1,005,795 B. Signed Scene geometry and runtime contracts did not change.
+
+Production diagnostics remain available to development/test tooling, but the
+WebGL probe and blend-log switch are inactive in production unless
+`NEXT_PUBLIC_ENABLE_RUNTIME_DIAGNOSTICS=true` is explicitly set. The app uses
+`NEXT_PUBLIC_SITE_URL` with a safe noindex fallback, has production security
+headers, and disables browser source maps. Fresh isolated production smoke
+passed across four viewports and all requested motion/fallback/context modes.
+Remaining work is asset provenance/rights, real domain/host operations, and
+RC-03B legal/art review; do not deploy.
+
+## 19. RC-03B production identity and operations sign-off
+
+RC-03B locks the external identity as a **fictional character-brand and
+DOM-first WebGL spatial-narrative experiment**. `DEV-HOST-01` is a fictional
+development identity; its timeline is fictional and the three FIELD NOTES
+books are concept publications. No real purchasing, ticketing, publishing,
+awards, or person-related commercial service is offered or implied.
+
+The Demo RC remains allowed for local, private-preview, and password-protected
+review channels when the disclosure and `noindex, nofollow` policy are kept.
+Public production is not approved: all development imagery, crops, covers, OG,
+and unresolved brand evidence are `unknown / not approved` in the authoritative
+asset inventory. No commercial-use, model/property-release, trademark, or
+attribution right is inferred without evidence.
+
+Domain, host, monitoring, cache invalidation, rollback, release, approval, and
+emergency-offline owners are still unassigned. `NEXT_PUBLIC_SITE_URL` therefore
+uses the safe development fallback and must not be changed to a guessed domain.
+RC-04 input is the final technical/regression and release-owner decision pass;
+it may adjudicate these gates but must not reopen signed Scene composition.

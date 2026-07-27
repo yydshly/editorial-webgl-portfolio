@@ -74,8 +74,8 @@ function percentile(values: readonly number[], ratio: number): number {
 async function waitForProbe(page: Page): Promise<void> {
   await expect.poll(async () => page.evaluate(() => {
     return Boolean((window as unknown as {
-      __trevorNoahWebGLProbe?: { snapshot: () => unknown };
-    }).__trevorNoahWebGLProbe);
+      __editorialWebGLProbe?: { snapshot: () => unknown };
+    }).__editorialWebGLProbe);
   })).toBe(true);
 }
 
@@ -147,8 +147,8 @@ async function collectAudit(
       } | null;
     };
     const probe = (window as unknown as {
-      __trevorNoahWebGLProbe: { snapshot: () => ProbeSnapshot };
-    }).__trevorNoahWebGLProbe;
+      __editorialWebGLProbe: { snapshot: () => ProbeSnapshot };
+    }).__editorialWebGLProbe;
     const canvas = document.querySelector("canvas.webgl-canvas") as HTMLCanvasElement;
     const gl = canvas.getContext("webgl2") ?? canvas.getContext("webgl");
     const ext = gl?.getExtension("EXT_texture_filter_anisotropic")

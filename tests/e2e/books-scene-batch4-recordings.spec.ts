@@ -229,9 +229,9 @@ async function waitForProbe(page: Page): Promise<void> {
         () =>
           typeof (
             window as unknown as {
-              __trevorNoahWebGLProbe?: { snapshot(): unknown };
+              __editorialWebGLProbe?: { snapshot(): unknown };
             }
-          ).__trevorNoahWebGLProbe?.snapshot === "function",
+          ).__editorialWebGLProbe?.snapshot === "function",
       ),
     )
     .toBe(true);
@@ -241,11 +241,11 @@ async function readProbe(page: Page): Promise<RecordingProbe> {
   return page.evaluate(() => {
     const probe = (
       window as unknown as {
-        __trevorNoahWebGLProbe?: {
+        __editorialWebGLProbe?: {
           snapshot(): RecordingProbe;
         };
       }
-    ).__trevorNoahWebGLProbe;
+    ).__editorialWebGLProbe;
     if (!probe) {
       throw new Error("WebGL probe is unavailable.");
     }

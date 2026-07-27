@@ -11,6 +11,7 @@ import type {
   SiteData,
   SiteSection,
 } from "./types";
+import { resolveSiteUrl } from "@/lib/site/siteUrl";
 
 const heroVisual: ImageAsset = {
   id: "hero-visual",
@@ -337,7 +338,7 @@ const siteContent: SiteData = {
   locale: "en",
   brand: {
     name: "DEV-HOST-01",
-    domain: "dev-host-01.example",
+    domain: resolveSiteUrl().hostname,
     description: "Fictional development editorial archive and media story system.",
   },
   seo,

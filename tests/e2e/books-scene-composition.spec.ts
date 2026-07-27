@@ -174,9 +174,9 @@ async function openRepresentativeHold(
         () =>
           typeof (
             window as unknown as {
-              __trevorNoahWebGLProbe?: { snapshot(): unknown };
+              __editorialWebGLProbe?: { snapshot(): unknown };
             }
-          ).__trevorNoahWebGLProbe?.snapshot === "function",
+          ).__editorialWebGLProbe?.snapshot === "function",
       ),
     )
     .toBe(true);
@@ -206,11 +206,11 @@ async function readComposition(page: Page): Promise<BooksCompositionProbe> {
   return page.evaluate(() => {
     const probe = (
       window as unknown as {
-        __trevorNoahWebGLProbe?: {
+        __editorialWebGLProbe?: {
           snapshot(): BooksCompositionProbe;
         };
       }
-    ).__trevorNoahWebGLProbe;
+    ).__editorialWebGLProbe;
     if (!probe) {
       throw new Error("WebGL probe is unavailable.");
     }

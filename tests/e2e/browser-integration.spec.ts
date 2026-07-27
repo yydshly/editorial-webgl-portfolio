@@ -305,8 +305,8 @@ async function settleFrames(page: Page, count = 24): Promise<void> {
 
 async function waitForWebGLProbe(page: Page): Promise<void> {
   await page.waitForFunction(() => {
-    const probe = (window as unknown as { __trevorNoahWebGLProbe?: { snapshot: () => unknown } })
-      .__trevorNoahWebGLProbe;
+    const probe = (window as unknown as { __editorialWebGLProbe?: { snapshot: () => unknown } })
+      .__editorialWebGLProbe;
     return typeof probe?.snapshot === "function";
   });
 }
@@ -323,8 +323,8 @@ async function waitForHeroRuntimeReady(page: Page): Promise<void> {
 async function getProbeSnapshot(page: Page): Promise<WebGLSnapshot> {
   return page.evaluate(() => {
     const probe = (window as unknown as {
-      __trevorNoahWebGLProbe?: { snapshot: () => WebGLSnapshot };
-    }).__trevorNoahWebGLProbe;
+      __editorialWebGLProbe?: { snapshot: () => WebGLSnapshot };
+    }).__editorialWebGLProbe;
 
     if (!probe) {
       throw new Error("WebGL probe not available.");
@@ -653,8 +653,8 @@ async function captureImmediateScrollFrames(
 ): Promise<ReadonlyArray<WebGLSnapshot>> {
   return page.evaluate(async ({ targetScrollY, captureCount }) => {
     const probe = (window as unknown as {
-      __trevorNoahWebGLProbe?: { snapshot: () => WebGLSnapshot };
-    }).__trevorNoahWebGLProbe;
+      __editorialWebGLProbe?: { snapshot: () => WebGLSnapshot };
+    }).__editorialWebGLProbe;
     if (!probe) {
       throw new Error("WebGL probe not available.");
     }
@@ -694,8 +694,8 @@ async function captureScrollTimeline(
 ): Promise<ReadonlyArray<WebGLSnapshot>> {
   return page.evaluate(async ({ start, end, captureCount }) => {
     const probe = (window as unknown as {
-      __trevorNoahWebGLProbe?: { snapshot: () => WebGLSnapshot };
-    }).__trevorNoahWebGLProbe;
+      __editorialWebGLProbe?: { snapshot: () => WebGLSnapshot };
+    }).__editorialWebGLProbe;
     if (!probe) {
       throw new Error("WebGL probe not available.");
     }
@@ -1144,8 +1144,8 @@ async function collectRenderSubmitCostSamples(
         };
       };
     };
-    const probe = (window as unknown as { __trevorNoahWebGLProbe?: Probe })
-      .__trevorNoahWebGLProbe;
+    const probe = (window as unknown as { __editorialWebGLProbe?: Probe })
+      .__editorialWebGLProbe;
     if (!probe) {
       return [];
     }

@@ -206,7 +206,7 @@ function requireAssetPath(
     decodedPath.includes("%");
 
   if (
-    !decodedPath.startsWith("/assets/books/") ||
+    !(decodedPath.startsWith("/assets/books/") || decodedPath.startsWith("/assets-source/books/")) ||
     unsafeSegments ||
     unsafeCharacters
   ) {
@@ -365,7 +365,7 @@ function parseCover(value: unknown, index: number): BooksCoverAsset {
     );
   }
   if (
-    source.path !== `/assets/books/${id}-master.png` ||
+    source.path !== `/assets-source/books/${id}-master.png` ||
     desktop.path !== `/assets/books/${id}-desktop.webp` ||
     mobile.path !== `/assets/books/${id}-mobile.webp`
   ) {

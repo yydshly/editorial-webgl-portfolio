@@ -13,6 +13,7 @@ import SceneDirector from "@/lib/webgl/SceneDirector";
 import WebGLFallback from "@/components/webgl/WebGLFallback";
 import GlobalWebGLStage from "@/components/webgl/GlobalWebGLStage";
 import { useRuntime } from "@/lib/motion/RuntimeProvider";
+import { shouldExposeRuntimeDiagnostics } from "@/lib/runtime/diagnostics";
 import WebGLRuntimeContext from "@/lib/webgl/WebGLRuntimeContext";
 import HeroScene from "@/lib/webgl/hero/HeroScene";
 import HeroWebGLRenderer from "@/lib/webgl/hero/HeroWebGLRenderer";
@@ -299,21 +300,21 @@ export default function ExperienceRoot({ children }: ExperienceRootProps) {
       }),
     });
     performanceProbeRef.current = performanceProbe;
-    if (typeof window !== "undefined") {
+    if (typeof window !== "undefined" && shouldExposeRuntimeDiagnostics()) {
       (
         window as Window & {
-          __trevorNoahWebGLProbe?: WebGLPerformanceProbe;
+          __editorialWebGLProbe?: WebGLPerformanceProbe;
         }
-      ).__trevorNoahWebGLProbe = performanceProbe;
+      ).__editorialWebGLProbe = performanceProbe;
     }
 
     return () => {
-      if (typeof window !== "undefined") {
+      if (typeof window !== "undefined" && shouldExposeRuntimeDiagnostics()) {
         const currentWindow = window as Window & {
-          __trevorNoahWebGLProbe?: WebGLPerformanceProbe;
+          __editorialWebGLProbe?: WebGLPerformanceProbe;
         };
-        if (currentWindow.__trevorNoahWebGLProbe === performanceProbe) {
-          delete currentWindow.__trevorNoahWebGLProbe;
+        if (currentWindow.__editorialWebGLProbe === performanceProbe) {
+          delete currentWindow.__editorialWebGLProbe;
         }
       }
       performanceProbeRef.current = null;

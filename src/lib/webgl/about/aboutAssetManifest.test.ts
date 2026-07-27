@@ -17,7 +17,7 @@ const validManifest = {
   assetAvailability: "manifest-only",
   mobileBreakpoint: 768,
   master: {
-    path: "/assets/about/about-portrait-master.png",
+    path: "/assets-source/about/about-portrait-master.png",
     width: 1600,
     height: 2200,
   },
@@ -47,10 +47,11 @@ const validManifest = {
 
 describe("About asset manifest", () => {
   it("describes a packaged development portrait whose three image files decode at their declared dimensions", async () => {
-    const publicDirectory = path.resolve(
+    const projectDirectory = path.resolve(
       path.dirname(fileURLToPath(import.meta.url)),
-      "../../../../public",
+      "../../../..",
     );
+    const publicDirectory = path.join(projectDirectory, "public");
     const assets = [
       aboutAssetManifest.master,
       aboutAssetManifest.desktop,
@@ -61,7 +62,10 @@ describe("About asset manifest", () => {
     expect(aboutAssetManifest.assetAvailability).toBe("packaged");
 
     for (const asset of assets) {
-      const absolutePath = path.join(publicDirectory, asset.path);
+      const assetRoot = asset.path.startsWith("/assets-source/")
+        ? projectDirectory
+        : publicDirectory;
+      const absolutePath = path.join(assetRoot, asset.path);
       expect(existsSync(absolutePath)).toBe(true);
       await expect(sharp(absolutePath).metadata()).resolves.toMatchObject({
         width: asset.width,
@@ -75,7 +79,7 @@ describe("About asset manifest", () => {
     expect(aboutAssetManifest.identity).toBe("DEV-HOST-01");
     expect(aboutAssetManifest.status).toBe("development");
     expect(aboutAssetManifest.assetAvailability).toBe("packaged");
-    expect(aboutAssetManifest.master.path).toBe("/assets/about/about-portrait-master.png");
+    expect(aboutAssetManifest.master.path).toBe("/assets-source/about/about-portrait-master.png");
     expect(aboutAssetManifest.desktop.path).toBe("/assets/about/about-portrait-desktop.webp");
     expect(aboutAssetManifest.mobile.path).toBe("/assets/about/about-portrait-mobile.webp");
     expect(aboutAssetManifest.colorSpace).toBe("sRGB");

@@ -8,6 +8,7 @@ import type DOMTracker from "@/lib/webgl/DOMTracker";
 import RenderScheduler from "@/lib/webgl/RenderScheduler";
 import { CHAPTER_PROGRESS_CONFIG } from "@/lib/webgl/hero/heroSceneConfig";
 import { MEDIA_PROGRESS_CONFIG } from "@/lib/webgl/media/MediaSceneProgress";
+import { shouldExposeRuntimeDiagnostics } from "@/lib/runtime/diagnostics";
 
 export type SceneActivationStrategy = "replace" | "overlap";
 
@@ -1626,7 +1627,7 @@ function resolveCameraBlend({
   let handoffProgress = 0;
   let handoffBlendWeight = 1;
 
-  if (typeof window !== "undefined") {
+  if (typeof window !== "undefined" && shouldExposeRuntimeDiagnostics()) {
     const runtimeDebug = (window as { __r3bBlendDebug?: unknown }).__r3bBlendDebug;
     if (runtimeDebug) {
       console.log("R3B_CAMERA_BLEND", {
