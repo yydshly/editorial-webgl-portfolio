@@ -265,4 +265,22 @@ do not currently demonstrate user-visible defects. SEO, navigation,
 accessibility, performance, and production-asset audits are still pending and
 may identify additional blockers.
 
-The project is ready to enter RC-01. It is not yet ready to merge or deploy.
+RC-01 is closed. The project is ready to enter RC-02; it is not yet ready to
+merge or deploy.
+
+## 12. RC-01 closure (supersedes the RC-01 entry above)
+
+RC-01 calibrated the central Media Desktop hold scale to `0.95`; no Camera,
+Renderer, handoff, viewport-renderer special case, or opacity-only workaround
+was used. Mobile retains its separately calibrated responsive composition.
+
+Final `1440x900` evidence: Main `74168.36` px² (maximum `74200`), Secondary
+exposure `0.20777` (range `0.18-0.24`), exposed asset fraction `0.28652`
+containing focal x `0.28`, and no overflow. The nine former failures now test
+composed DOM/WebGL recognition, `global-idle`, reduced motion, fast jumps, and
+grouped fallback lifecycle semantics.
+
+The isolated no-omission result is `76 discovered / 69 passed / 0 failed / 7
+explicit opt-in skips / 0 omitted`. The preload-only reverse lifecycle remains
+an independent Minor debt. Next: **RC-02 Full-site visual, navigation, SEO,
+and accessibility validation**; merge and deployment remain unauthorized.

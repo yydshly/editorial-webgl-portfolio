@@ -306,3 +306,17 @@ Phase 4 Closure is complete only when:
 - the 32-cell matrix and audit plans are signed;
 - production assets and performance budgets are accepted;
 - final integration and release build are explicitly authorized and verified.
+
+## RC-01 completion record
+
+- [x] Calibrate the real Desktop Media composition defect without changing
+  Camera, handoff, Renderer, or global architecture.
+- [x] Keep Mobile within its independent exposure contract.
+- [x] Replace all nine obsolete Hero/Media assertions with current product
+  semantics while retaining meaningful failure conditions.
+- [x] Fix the Windows isolated-runner temporary-tsconfig path normalization.
+- [x] Verify `76 discovered / 69 passed / 0 failed / 7 explicit opt-in skips /
+  0 omitted`.
+
+**Next executable plan section: RC-02.** Do not begin performance, SEO,
+accessibility, deployment, or another spatial chapter as part of RC-01.

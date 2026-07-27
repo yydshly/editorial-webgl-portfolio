@@ -3,8 +3,8 @@
 ## 1. Current status
 
 - Current phase: Release Candidate / Phase 4 Closure.
-- Current task completed: RC-00 Release Candidate Baseline & Debt Triage.
-- Current decision gate: RC-01 Hero / Media E2E debt repair.
+- Current task completed: RC-01 Media Product Defect Repair & E2E Semantic Alignment.
+- Current decision gate: RC-02 full-site visual, navigation, SEO, and accessibility validation.
 - P4-03 About Scene: implemented, verified, human-signed, and closed.
 - P4-04 product direction: approved.
 - P4-04 Batch 1: content/DOM, manifest, development assets, and pure progress/motion implemented.
@@ -516,3 +516,25 @@ release blocker.
 The five lint warnings are removed without Runtime behavior changes. RC-01 is
 authorized to repair the two product defects and nine test semantics; it is not
 authorized to merge, deploy, replace production assets, or add a new Scene.
+
+## 15. RC-01 closure record
+
+RC-01 is closed on `feat/release-candidate-phase4`. The single Canvas,
+Renderer, Camera, RAF, DOM-first, native Three.js, and no-R3F architecture is
+unchanged.
+
+- The shared product root cause was an oversized Desktop Media main hold pose.
+  Its centralized hold scale is now `0.95`; the approved Mobile composition
+  keeps a separate responsive multiplier.
+- Final `1440x900` browser evidence records Main area `74168.36`, Secondary
+  exposure `0.20777`, exposed-asset fraction `0.28652` containing focal x
+  `0.28`, and no horizontal overflow. Both Category A blockers are closed.
+- The nine Category B tests now verify composed DOM/WebGL subjects, legal
+  `global-idle`, zero-travel reduced motion, atomic fast-jump convergence, and
+  grouped ready/loading/context-loss fallback behavior.
+- Final isolated E2E: `76 discovered / 69 passed / 0 failed / 7 explicit
+  opt-in skips / 0 omitted`. Local ignored capture evidence is in
+  `.tmp/rc01-evidence-final/`.
+
+Next entry: **RC-02 Full-site visual, navigation, SEO, and accessibility
+validation**. Do not merge or deploy in RC-02 without separate authority.

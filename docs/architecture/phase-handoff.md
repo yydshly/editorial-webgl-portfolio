@@ -259,6 +259,21 @@ Authority:
 - `docs/superpowers/specs/2026-07-27-release-candidate-phase4-closure.md`
 - `docs/superpowers/plans/2026-07-27-release-candidate-phase4-closure-plan.md`
 
+## RC-01 closure and RC-02 entry
+
+RC-01 is closed. The two confirmed Media composition defects were fixed in
+centralized Media motion configuration, and the nine old Hero/Media E2E checks
+now assert the current composed runtime contract. Final isolated E2E is
+`76 discovered / 69 passed / 0 failed / 7 explicit opt-in skips / 0 omitted`.
+
+At Desktop `1440x900`, Main is `74168.36` px² (maximum `74200`), Secondary
+exposure is `0.20777` (contract `0.18-0.24`), and its exposed asset region
+contains focal x `0.28`. The Single Canvas / Renderer / Camera / RAF invariant
+remains intact.
+
+The next phase is **RC-02 Full-site visual, navigation, SEO, and accessibility
+validation**. It must not create a new scene, merge `main`, or deploy.
+
 ## Superseded P4-04 Batch 1 entry (historical)
 
 The following Batch 1 instructions are retained only as phase history and are

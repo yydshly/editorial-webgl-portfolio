@@ -210,11 +210,13 @@ async function runBaseline() {
   fs.mkdirSync(followUpDirectory, { recursive: true });
   fs.mkdirSync(path.dirname(nextTsconfigPath), { recursive: true });
   writeJson(nextTsconfigPath, { extends: "../tsconfig.json" });
-  const stdout = fs.createWriteStream(
+  const stdout = fs.openSync(
     path.join(artifactDirectory, "server.stdout.log"),
+    "w",
   );
-  const stderr = fs.createWriteStream(
+  const stderr = fs.openSync(
     path.join(artifactDirectory, "server.stderr.log"),
+    "w",
   );
   const serverProcess = spawn(
     process.execPath,
@@ -224,7 +226,7 @@ async function runBaseline() {
       env: {
         ...process.env,
         NEXT_DIST_DIR: nextDistDir,
-        NEXT_TSCONFIG_PATH: path.relative(root, nextTsconfigPath),
+        NEXT_TSCONFIG_PATH: path.relative(root, nextTsconfigPath).split(path.sep).join("/"),
       },
       stdio: ["ignore", stdout, stderr],
       windowsHide: true,
@@ -299,8 +301,8 @@ async function runBaseline() {
     process.exitCode = summary.failed > 0 || summary.omitted > 0 ? 1 : 0;
   } finally {
     await stopServer(serverProcess);
-    stdout.end();
-    stderr.end();
+    fs.closeSync(stdout);
+    fs.closeSync(stderr);
   }
 }
 
