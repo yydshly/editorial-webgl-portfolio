@@ -1,8 +1,8 @@
 # Release Candidate / Phase 4 Closure Specification
 
-**Date:** 2026-07-27  
-**Status:** Approved RC baseline  
-**Baseline commit:** `9f2f103 feat: complete P4-04 books scene`  
+**Date:** 2026-07-27
+**Status:** Approved RC baseline
+**Baseline commit:** `9f2f103 feat: complete P4-04 books scene`
 **Working branch:** `feat/release-candidate-phase4`
 
 ## 1. Purpose
@@ -360,3 +360,15 @@ The authoritative records are `docs/release/release-positioning.md`,
 `deployment-runbook.md`. RC-04 is limited to final regression, owner decision
 capture, and release-boundary verification; it does not authorize Scene or
 runtime redesign, merge, or deployment.
+
+## 16. RC-04 final regression and Demo RC build
+
+RC-04 verifies the frozen Phase 4 baseline and produces a reproducible,
+controlled Demo RC. It does not add a Scene or change Camera, SceneDirector,
+Renderer, assets, or Runtime behavior. The Demo RC is labelled `0.4.0-rc.1`
+while `package.json` remains at `0.1.0`; build metadata records both values.
+
+The final production smoke is a local `next start` dry-run only. A green Demo
+RC does not satisfy the separate Public Production gates for licensed assets,
+real domain, operations ownership, legal/art approval, or robots/index
+approval.
