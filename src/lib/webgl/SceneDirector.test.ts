@@ -3184,6 +3184,91 @@ describe("SceneDirector", () => {
     director.destroy();
   });
 
+  it("keeps a preload-only Books reverse safe and reactivates without duplicate acquisition", async () => {
+    const bus = new MotionBus();
+    const frame = new FrameCoordinator(bus);
+    const snapshot = new MotionSnapshotStore();
+    const scheduler = new RenderScheduler(frame);
+    const registry = new SceneRegistry();
+    const anchors = createInterludeAnchorTracker(1_000);
+    const booksIntent: CameraIntent = {
+      target: { x: 2.4, y: 0, z: -8 },
+      positionOffset: { x: 0, y: 0, z: 0.35 },
+      fovIntent: 48,
+      depthBias: -0.15,
+      weight: 1,
+    };
+    const books = createMockSceneWithProgress("books-scene", {
+      sceneType: "books",
+      anchorId: "books",
+      cameraIntent: booksIntent,
+      visualReady: false,
+    });
+    const director = new SceneDirector({
+      registry,
+      scheduler,
+      snapshot,
+      domTracker: anchors.tracker,
+      booksVisualReadyResolver: () => books.state.visualReady,
+    });
+    const { callbacks, requestAnimationFrame, cancelAnimationFrame } =
+      makeRafMocks();
+
+    director.register(books.scene);
+    anchors.set("manifesto", { top: -6_000, bottom: -5_000 });
+    anchors.set("about", { top: -4_000, bottom: -1 });
+    anchors.set("quote", { top: 900, bottom: 1_500 });
+    anchors.set("books", { top: 1_500, bottom: 5_500 });
+    scheduler.start();
+    frame.start();
+
+    runFrameCycles(callbacks, [16]);
+    await Promise.resolve();
+    expect(books.lifecycle.preload).toHaveBeenCalledTimes(1);
+    expect(registry.getState("books-scene")).toMatchObject({
+      resident: true,
+      visible: false,
+      updating: false,
+      dominant: false,
+      cached: false,
+    });
+
+    anchors.set("books", { top: 1_501, bottom: 5_501 });
+    runFrameCycles(callbacks, [32]);
+    expect(registry.getState("books-scene")).toMatchObject({
+      resident: true,
+      visible: false,
+      updating: false,
+      dominant: false,
+      cached: false,
+    });
+    expect(books.lifecycle.preload).toHaveBeenCalledTimes(1);
+    expect(director.getCameraIntent()).toEqual(GLOBAL_IDLE_CAMERA_INTENT);
+
+    books.setVisualReady(true);
+    anchors.set("books", { top: 800, bottom: 4_800 });
+    runFrameCycles(callbacks, [48]);
+    expect(registry.getState("books-scene")).toMatchObject({
+      resident: true,
+      visible: true,
+      updating: true,
+      dominant: true,
+      cached: false,
+    });
+    expect(books.lifecycle.preload).toHaveBeenCalledTimes(1);
+    expect(books.lifecycle.activate).toHaveBeenCalledTimes(1);
+    expect(director.getCameraIntent()).toEqual({
+      sceneId: "books-scene",
+      intent: booksIntent,
+    });
+
+    frame.stop();
+    requestAnimationFrame.mockRestore();
+    cancelAnimationFrame.mockRestore();
+    director.disposeAll();
+    director.destroy();
+  });
+
   it("gates Books dominance on all-cover readiness and restores global-idle on reverse in the same frame", async () => {
     const bus = new MotionBus();
     const frame = new FrameCoordinator(bus);

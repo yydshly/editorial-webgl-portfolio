@@ -431,7 +431,7 @@ export default class SceneDirector {
   }
 
   private syncMediaVisualReady(): void {
-    for (const [id, scene] of this.scenes.entries()) {
+    for (const scene of this.scenes.values()) {
       if (scene.identity.sceneType !== "media") {
         continue;
       }
@@ -1629,7 +1629,6 @@ function resolveCameraBlend({
   if (typeof window !== "undefined") {
     const runtimeDebug = (window as { __r3bBlendDebug?: unknown }).__r3bBlendDebug;
     if (runtimeDebug) {
-      // eslint-disable-next-line no-console
       console.log("R3B_CAMERA_BLEND", {
         isHeroToMedia,
         isMediaToHero,

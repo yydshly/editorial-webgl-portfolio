@@ -118,6 +118,7 @@ describe("GlobalWebGLStage", () => {
 
     await waitFor(() => {
       expect(threeRendererMock.instances).toHaveLength(1);
+      expect(scheduler.isRunning).toBe(true);
     });
     frame.start();
     callbacks.shift()?.(16);

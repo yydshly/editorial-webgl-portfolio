@@ -5,12 +5,16 @@
 P4-03 About Scene and P4-04 Books Scene are closed. P4-04 Batches 1-4 are
 implemented and verified, and the final Desktop and Mobile browser evidence
 has received explicit human visual sign-off. Chapter development is complete;
-the project now enters site-wide Release Candidate / Phase 4 Closure.
+the project is now in site-wide Release Candidate / Phase 4 Closure. RC-00
+Baseline & Debt Triage is complete; RC-01 Hero / Media E2E debt repair is the
+next implementation gate.
 
 Authority:
 
 - Design: `docs/superpowers/specs/2026-07-27-p4-04-books-scene-design.md`
 - Plan: `docs/superpowers/plans/2026-07-27-p4-04-books-scene-implementation-plan.md`
+- RC authority: `docs/superpowers/specs/2026-07-27-release-candidate-phase4-closure.md`
+- RC plan: `docs/superpowers/plans/2026-07-27-release-candidate-phase4-closure-plan.md`
 - Architecture decisions: `docs/architecture/architecture-decisions.md`
 - Scene contract: `docs/architecture/scene-system.md`
 - Rendering contract: `docs/architecture/rendering-contract.md`
@@ -31,6 +35,8 @@ Authority:
 - P4-04 Batch 3: CameraIntent, formal orchestration, grouped fallback, context restore, evidence, and frozen differential complete.
 - P4-04 Batch 4: Desktop/Mobile composition tuning, final evidence, and human visual sign-off complete.
 - P4-04 Books Scene: closed.
+- RC-00: complete; 11 frozen Hero/Media failures adjudicated as two Category A
+  product blockers and nine Category B test-semantics repairs.
 
 ## P4-03 About Scene closure
 
@@ -135,15 +141,13 @@ Release Candidate / Phase 4 Closure
 ```
 
 It is not a P4-05 Scene and must not introduce another spatial chapter.
-The entry scope is:
+RC-00 is complete. The RC-01 entry scope is:
 
-1. complete a site-wide Hero-to-Books browser acceptance pass;
-2. resolve or formally adjudicate the 11 frozen Hero/Media E2E failures;
-3. address the preload-only reverse lifecycle Minor;
-4. remove the five remaining lint warnings;
-5. complete SEO, navigation, accessibility, and production-build checks;
-6. prepare the production-asset replacement checklist and release acceptance;
-7. merge the feature branch and produce a deployable version.
+1. fix the two confirmed Media composition product defects;
+2. rewrite the nine outdated tests against composed DOM/WebGL product
+   semantics without weakening visual-continuity or fallback gates;
+3. decide whether to clean the proven-safe preload-only cold-resident state;
+4. finish with a zero-omission full E2E run.
 
 ## P4-04 Batch 3 verified result
 
@@ -216,6 +220,44 @@ block P4-04 closure:
 
 - the frozen 11 Hero/Media E2E failures;
 - the preload-only reverse lifecycle Minor.
+
+## RC-00 baseline and debt triage
+
+RC-00 is complete on `feat/release-candidate-phase4` from stable commit
+`9f2f103`.
+
+Engineering baseline:
+
+- lint started at zero errors / five warnings; the five warnings are removed
+  without Runtime behavior changes;
+- typecheck, unit, and production build pass;
+- exhaustive E2E:
+  `76 discovered / 58 passed / 11 failed / 7 skipped / 0 omitted`;
+- an automated isolated-server entry now reruns declarations omitted by serial
+  failure and reports a combined aggregate.
+
+The earlier P4-04 `64 passed / 11 failed / 1 skipped` count treated six opt-in
+evidence declarations as passes. RC-00 corrects them to conditional skips.
+This does not change the 11-failure topology and does not reopen P4-04.
+
+Failure adjudication:
+
+- Category A, release-blocking product defects: two Media Desktop composition
+  failures (secondary exposure/focal and hold area/exposure);
+- Category B, outdated test semantics: nine failures covering internal
+  dominance proxies, WebGL-only vacuum proxies, and fixed-progress fallback
+  prerequisites;
+- Category C: none in the canonical isolated development run;
+- Category D: none among the 11.
+
+The preload-only reverse Minor is a low-risk cold-resident state. Deterministic
+tests prove no duplicate preload/owner growth, no stale CameraIntent, and
+successful reactivation. It is not a current release blocker.
+
+Authority:
+
+- `docs/superpowers/specs/2026-07-27-release-candidate-phase4-closure.md`
+- `docs/superpowers/plans/2026-07-27-release-candidate-phase4-closure-plan.md`
 
 ## Superseded P4-04 Batch 1 entry (historical)
 

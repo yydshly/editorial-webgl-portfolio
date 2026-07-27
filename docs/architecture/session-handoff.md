@@ -3,8 +3,8 @@
 ## 1. Current status
 
 - Current phase: Release Candidate / Phase 4 Closure.
-- Current task completed: P4-04 Books Scene implementation, verification, final human visual sign-off, and closure.
-- Current decision gate: P4-04 is closed; the next gate is site-wide Release Candidate acceptance.
+- Current task completed: RC-00 Release Candidate Baseline & Debt Triage.
+- Current decision gate: RC-01 Hero / Media E2E debt repair.
 - P4-03 About Scene: implemented, verified, human-signed, and closed.
 - P4-04 product direction: approved.
 - P4-04 Batch 1: content/DOM, manifest, development assets, and pure progress/motion implemented.
@@ -12,12 +12,19 @@
 - P4-04 Batch 3: implemented and verified against the same frozen E2E failure set.
 - P4-04 Batch 4: Desktop/Mobile composition tuning, final browser evidence, and the exhaustive frozen-baseline differential are complete.
 - P4-04 Books Scene: explicit Desktop/Mobile human visual acceptance received and phase closed.
-- Workspace note: the P4-04 archive source branch is `feat/p4-04-books-batch3`; branch merge and deployable release creation belong to Release Candidate closure.
+- Workspace note: RC work is isolated on `feat/release-candidate-phase4`,
+  created from stable commit `9f2f103`; branch merge and deployable release
+  creation remain deferred.
 
 P4-04 authority:
 
 - `docs/superpowers/specs/2026-07-27-p4-04-books-scene-design.md`
 - `docs/superpowers/plans/2026-07-27-p4-04-books-scene-implementation-plan.md`
+
+Release Candidate authority:
+
+- `docs/superpowers/specs/2026-07-27-release-candidate-phase4-closure.md`
+- `docs/superpowers/plans/2026-07-27-release-candidate-phase4-closure-plan.md`
 
 This handoff supersedes earlier statements that P4-03 was waiting for implementation, final E2E verification, or human visual acceptance.
 
@@ -383,8 +390,9 @@ Verification:
 - unit: `49 files / 299 tests`;
 - production build: pass;
 - complete About + Books focused E2E: `45 / 45`;
-- complete E2E with per-declaration continuation after the serial stop:
-  `76 discovered / 64 passed / 11 failed / 1 existing skip / 0 omitted`;
+- complete E2E with per-declaration continuation after the serial stop,
+  corrected by RC-00 declaration accounting:
+  `76 discovered / 58 passed / 11 failed / 7 conditional skips / 0 omitted`;
 - the failure set exactly equals the frozen Hero/Media 11-item set;
 - the visual-vacuum topology remains `15 / 10 / 15 / 10` frames;
 - no assertion, threshold, skip rule, or frozen Hero/Media parameter changed.
@@ -412,7 +420,7 @@ block closure. Production cover replacement requires a Books-only art review.
 The frozen 11 Hero/Media E2E failures and the preload-only reverse lifecycle
 Minor remain independent Release Candidate technical debt.
 
-## 12. Next phase start
+## 12. RC-01 start
 
 Read in this order:
 
@@ -424,6 +432,8 @@ Read in this order:
 6. `docs/architecture/interface-contracts.md`
 7. `docs/superpowers/specs/2026-07-27-p4-04-books-scene-design.md`
 8. `docs/superpowers/plans/2026-07-27-p4-04-books-scene-implementation-plan.md`
+9. `docs/superpowers/specs/2026-07-27-release-candidate-phase4-closure.md`
+10. `docs/superpowers/plans/2026-07-27-release-candidate-phase4-closure-plan.md`
 
 The next phase is:
 
@@ -431,15 +441,13 @@ The next phase is:
 Release Candidate / Phase 4 Closure
 ```
 
-Do not create or name a P4-05 Scene. Chapter development has ended. Start with:
+Do not create or name a P4-05 Scene. Chapter development has ended. RC-00 is
+complete. Start RC-01 with:
 
-1. a site-wide Hero-to-Books browser acceptance pass;
-2. resolution or formal adjudication of the frozen 11 Hero/Media E2E failures;
-3. the preload-only reverse lifecycle Minor;
-4. the five remaining lint warnings;
-5. SEO, navigation, accessibility, and production-build checks;
-6. the production-asset replacement checklist and release acceptance;
-7. feature-branch merge and deployable version creation.
+1. the two confirmed Media Desktop composition blockers;
+2. the nine outdated test-semantics repairs;
+3. the optional preload-only cold-resident cleanup decision;
+4. a zero-omission full E2E exit run.
 
 P4-04 remains closed during this work. A production cover replacement triggers
 only a Books-specific art review unless new evidence identifies a separate
@@ -469,8 +477,42 @@ retain the frozen 15-frame mobile / 10-frame desktop topology; and no
 assertion, skip policy, or frozen Hero/Media parameter was changed to produce
 the result.
 
-Batch 4 also satisfies the gate. Its exhaustive aggregate is
-`76 / 64 / 11 / 1`, with zero omitted serial-tail tests. The 12 additional
-Batch 4 tests all pass, all About and Books focused tests pass, the failure set
-remains exactly the same frozen 11 items, and the deterministic vacuum topology
+Batch 4 also satisfies the failure-topology gate. RC-00 corrected its
+declaration accounting to `76 / 58 / 11 / 7 / 0 omitted`: six opt-in evidence
+declarations skip when capture flags are absent and were previously counted as
+passes. All About and Books focused product checks pass, the failure set
+remains exactly the same 11 items, and the deterministic vacuum topology
 remains unchanged.
+
+## 14. RC-00 closure record
+
+RC-00 ran from stable commit `9f2f103` on
+`feat/release-candidate-phase4`, using isolated Next output and ports without
+reusing the user's preview.
+
+Current exhaustive E2E result:
+
+```text
+76 discovered / 58 passed / 11 failed / 7 skipped / 0 omitted
+```
+
+The automated entry `pnpm test:e2e:rc` runs the entire suite, detects
+expected-pass declarations skipped by serial failure, reruns their exact
+declarations, and produces one combined no-omission report.
+
+The 11 failures are adjudicated as:
+
+- two Category A product blockers: Desktop Media secondary exposure/focal and
+  Desktop Media hold area/exposure;
+- nine Category B test-semantics repairs: reduced-motion dominance, four
+  DOM-omitting vacuum checks, fast-jump coherence, and three invalid
+  fixed-progress fallback prerequisites;
+- zero Category C or D findings in the canonical run.
+
+The preload-only reverse Minor is a proven-safe cold-resident state: no owner
+growth, stale CameraIntent, or reactivation failure. It is not a current
+release blocker.
+
+The five lint warnings are removed without Runtime behavior changes. RC-01 is
+authorized to repair the two product defects and nine test semantics; it is not
+authorized to merge, deploy, replace production assets, or add a new Scene.

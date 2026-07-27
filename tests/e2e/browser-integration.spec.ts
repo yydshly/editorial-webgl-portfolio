@@ -496,8 +496,6 @@ async function seekChapterProgress(
   tolerance = 0.01,
 ): Promise<WebGLSnapshot> {
   const target = Math.max(0, Math.min(1, requestedProgress));
-  const initialSnapshot = await getProbeSnapshot(page);
-  const initialScene = initialSnapshot.diagnostics.sceneSnapshots[sceneId];
   const initialContext = await page.evaluate(
     ({ scene }) => {
       const anchor = document.getElementById(scene === "hero-scene" ? "hero" : "media");
@@ -1027,26 +1025,6 @@ function expectVisualVacuumWithinOneFrame(
     process.stdout.write(`P4_R41_VACUUM ${evidence}\n`);
   }
   expect(measurement.longestRunDurationMs, evidence).toBeLessThanOrEqual(16.7);
-}
-
-async function waitForTransitionPhase(
-  page: Page,
-  expectedPhase: SceneTransitionSnapshot["transitionPhase"],
-): Promise<WebGLSnapshot> {
-  let matched: WebGLSnapshot | null = null;
-  await expect
-    .poll(async () => {
-      const snapshot = await getProbeSnapshot(page);
-      if (snapshot.transition?.transitionPhase === expectedPhase) {
-        matched = snapshot;
-        return true;
-      }
-
-      return false;
-    }, { timeout: 30000 })
-    .toBeTruthy();
-
-  return matched ?? (await getProbeSnapshot(page));
 }
 
 async function waitForTransitionState(
@@ -2471,7 +2449,6 @@ test.describe("Browser Integration Validation", () => {
       await waitForHeroRuntimeReady(page);
       await expect(page.locator("canvas.webgl-canvas")).toHaveCount(1);
 
-      const geometry = await getSceneGeometry(page);
       const settledSnapshot = await seekChapterProgress(
         page,
         "media-scene",
