@@ -36,6 +36,10 @@ import {
 } from "@/lib/webgl/about/AboutFallbackVisibility";
 import BooksScene from "@/lib/webgl/books/BooksScene";
 import BooksWebGLRenderer from "@/lib/webgl/books/BooksWebGLRenderer";
+import {
+  resolveBooksFallbackState,
+  setBooksFallbackImageVisibility,
+} from "@/lib/webgl/books/BooksFallbackVisibility";
 
 type ExperienceRootProps = {
   readonly children: ReactNode;
@@ -66,14 +70,15 @@ export default function ExperienceRoot({ children }: ExperienceRootProps) {
   const performanceProbeRef = useRef<WebGLPerformanceProbe | null>(null);
   const sceneDirectorRef = useRef<SceneDirector | null>(null);
   const previousCameraIntentSceneIdRef = useRef<string | null>(null);
-  const booksDevelopmentLifecycleRef = useRef({
-    preloadInFlight: false,
-  });
   const mediaWebGLState = useRef({
     available: false,
     contextLost: false,
   });
   const aboutWebGLState = useRef({
+    available: false,
+    contextLost: false,
+  });
+  const booksWebGLState = useRef({
     available: false,
     contextLost: false,
   });
@@ -156,6 +161,16 @@ export default function ExperienceRoot({ children }: ExperienceRootProps) {
     setAboutFallbackImageVisibility(state);
   }, [aboutScene, sceneRegistry]);
 
+  const applyBooksFallbackVisibility = useCallback(() => {
+    const state = resolveBooksFallbackState(booksWebGLState.current, {
+      snapshot: booksScene.getSnapshot(),
+      registryState: sceneRegistry.getState(booksScene.identity.id),
+      composition:
+        booksRendererRef.current?.compositionSnapshot ?? null,
+    });
+    setBooksFallbackImageVisibility(state);
+  }, [booksScene, sceneRegistry]);
+
   const handleWebGLRuntimeStateChange = useCallback(
     (state: {
       readonly isReady: boolean;
@@ -170,10 +185,19 @@ export default function ExperienceRoot({ children }: ExperienceRootProps) {
         available: !state.isUnavailable && state.isReady,
         contextLost: state.isContextLost,
       };
+      booksWebGLState.current = {
+        available: !state.isUnavailable && state.isReady,
+        contextLost: state.isContextLost,
+      };
       applyMediaFallbackVisibility();
       applyAboutFallbackVisibility();
+      applyBooksFallbackVisibility();
     },
-    [applyAboutFallbackVisibility, applyMediaFallbackVisibility],
+    [
+      applyAboutFallbackVisibility,
+      applyBooksFallbackVisibility,
+      applyMediaFallbackVisibility,
+    ],
   );
 
   useEffect(() => {
@@ -198,6 +222,8 @@ export default function ExperienceRoot({ children }: ExperienceRootProps) {
             sceneState: mediaRegistryState,
           });
         },
+        booksVisualReadyResolver: () =>
+          booksRendererRef.current?.isVisualReady ?? false,
         onUpdateProfile: (durationMs, updateCount) => {
           sceneDirectorMetrics.current.updateCostMs = durationMs;
           sceneDirectorMetrics.current.updateCount = updateCount;
@@ -210,7 +236,13 @@ export default function ExperienceRoot({ children }: ExperienceRootProps) {
     return () => {
       currentDirector?.destroy();
     };
-  }, [domTracker, mediaScene, renderScheduler, sceneRegistry, snapshot]);
+  }, [
+    domTracker,
+    mediaScene,
+    renderScheduler,
+    sceneRegistry,
+    snapshot,
+  ]);
 
   useEffect(() => {
     domTracker.connect();
@@ -238,7 +270,7 @@ export default function ExperienceRoot({ children }: ExperienceRootProps) {
       };
     };
 
-    performanceProbeRef.current = new WebGLPerformanceProbe({
+    const performanceProbe = new WebGLPerformanceProbe({
       scheduler: renderScheduler,
       assetRegistry,
       sceneRegistry,
@@ -266,8 +298,24 @@ export default function ExperienceRoot({ children }: ExperienceRootProps) {
           booksRendererRef.current?.resourceSnapshot ?? null,
       }),
     });
+    performanceProbeRef.current = performanceProbe;
+    if (typeof window !== "undefined") {
+      (
+        window as Window & {
+          __trevorNoahWebGLProbe?: WebGLPerformanceProbe;
+        }
+      ).__trevorNoahWebGLProbe = performanceProbe;
+    }
 
     return () => {
+      if (typeof window !== "undefined") {
+        const currentWindow = window as Window & {
+          __trevorNoahWebGLProbe?: WebGLPerformanceProbe;
+        };
+        if (currentWindow.__trevorNoahWebGLProbe === performanceProbe) {
+          delete currentWindow.__trevorNoahWebGLProbe;
+        }
+      }
       performanceProbeRef.current = null;
     };
   }, [
@@ -365,8 +413,11 @@ export default function ExperienceRoot({ children }: ExperienceRootProps) {
   const handleContextLost = useCallback(() => {
     mediaWebGLState.current = { available: false, contextLost: true };
     aboutWebGLState.current = { available: false, contextLost: true };
+    booksWebGLState.current = { available: false, contextLost: true };
+    booksScene.setVisualReady(false);
     applyMediaFallbackVisibility();
     applyAboutFallbackVisibility();
+    applyBooksFallbackVisibility();
     heroRendererRef.current?.dispose();
     heroRendererRef.current = null;
     mediaRendererRef.current?.dispose();
@@ -377,7 +428,12 @@ export default function ExperienceRoot({ children }: ExperienceRootProps) {
     booksRendererRef.current = null;
     globalRendererRef.current = null;
     rendererProbeRef.current = null;
-  }, [applyAboutFallbackVisibility, applyMediaFallbackVisibility]);
+  }, [
+    applyAboutFallbackVisibility,
+    applyBooksFallbackVisibility,
+    applyMediaFallbackVisibility,
+    booksScene,
+  ]);
 
   const bridgeRenderer = useCallback((payload: MotionFramePayload): void => {
     const sceneDirector = sceneDirectorRef.current;
@@ -417,6 +473,7 @@ export default function ExperienceRoot({ children }: ExperienceRootProps) {
       booksScene.setVisualReady(
         booksRendererRef.current?.isVisualReady ?? false,
       );
+      applyBooksFallbackVisibility();
     });
 
     return () => {
@@ -424,6 +481,7 @@ export default function ExperienceRoot({ children }: ExperienceRootProps) {
     };
   }, [
     applyAboutFallbackVisibility,
+    applyBooksFallbackVisibility,
     applyMediaFallbackVisibility,
     booksScene,
     frame,
@@ -456,6 +514,23 @@ export default function ExperienceRoot({ children }: ExperienceRootProps) {
   }, [aboutScene.identity.id, applyAboutFallbackVisibility, sceneRegistry]);
 
   useEffect(() => {
+    const unregister = sceneRegistry.registerStateListener(
+      booksScene.identity.id,
+      () => {
+        applyBooksFallbackVisibility();
+      },
+    );
+
+    return () => {
+      unregister();
+    };
+  }, [
+    applyBooksFallbackVisibility,
+    booksScene.identity.id,
+    sceneRegistry,
+  ]);
+
+  useEffect(() => {
     return () => {
       heroRendererRef.current?.dispose();
       heroRendererRef.current = null;
@@ -483,68 +558,6 @@ export default function ExperienceRoot({ children }: ExperienceRootProps) {
       sceneDirector.dispose(sceneId);
     };
   }, [booksScene]);
-
-  useEffect(() => {
-    // P4-04 Batch 2 development integration only. Remove this measured-anchor
-    // bridge when formal Quote -> Books orchestration is implemented.
-    const developmentLifecycle = booksDevelopmentLifecycleRef.current;
-    const unregister = frame.register("POST", () => {
-      const sceneDirector = sceneDirectorRef.current;
-      if (!sceneDirector) {
-        return;
-      }
-
-      const sectionAnchor = domTracker.getSnapshot(
-        booksScene.identity.anchorId ?? "books",
-      );
-      const coverStageAnchor = domTracker.getSnapshot("books-cover-stage");
-      if (!sectionAnchor || !coverStageAnchor) {
-        return;
-      }
-
-      const viewportHeight = Math.max(1, snapshot.viewport.height);
-      const isNearBooks =
-        sectionAnchor.worldTop.screen.y <= viewportHeight * 1.5 &&
-        sectionAnchor.worldBottom.screen.y >= -viewportHeight * 0.5;
-      const isBooksCore =
-        coverStageAnchor.worldTop.screen.y <= viewportHeight * 0.88 &&
-        coverStageAnchor.worldBottom.screen.y >= viewportHeight * 0.12;
-      const state = sceneRegistry.getState(booksScene.identity.id);
-      if (!state || state.disposed) {
-        return;
-      }
-
-      if (
-        isNearBooks &&
-        !state.resident &&
-        !developmentLifecycle.preloadInFlight
-      ) {
-        developmentLifecycle.preloadInFlight = true;
-        void sceneDirector
-          .preload(booksScene.identity.id)
-          .finally(() => {
-            developmentLifecycle.preloadInFlight = false;
-          });
-        return;
-      }
-
-      if (isBooksCore && state.resident) {
-        if (!(state.visible || state.updating || state.dominant)) {
-          sceneDirector.activate(booksScene.identity.id, "replace");
-        }
-        return;
-      }
-
-      if (!isBooksCore && state.resident && !state.cached) {
-        sceneDirector.cache(booksScene.identity.id);
-      }
-    });
-
-    return () => {
-      unregister();
-      developmentLifecycle.preloadInFlight = false;
-    };
-  }, [booksScene, domTracker, frame, sceneRegistry, snapshot]);
 
   useEffect(() => {
     const sceneId = aboutScene.identity.id;
@@ -623,20 +636,6 @@ export default function ExperienceRoot({ children }: ExperienceRootProps) {
     renderScheduler,
     sceneRegistry,
   ]);
-
-  useEffect(() => {
-    if (typeof window === "undefined") {
-      return;
-    }
-
-    const globalWindow = window as Window & { __trevorNoahWebGLProbe?: WebGLPerformanceProbe };
-    globalWindow.__trevorNoahWebGLProbe = performanceProbeRef.current ?? undefined;
-
-    return () => {
-      const currentWindow = window as Window & { __trevorNoahWebGLProbe?: WebGLPerformanceProbe };
-      delete currentWindow.__trevorNoahWebGLProbe;
-    };
-  }, []);
 
   return (
     <div className="experience-root">

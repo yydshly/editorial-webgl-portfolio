@@ -36,8 +36,18 @@ describe("BooksSceneMotion", () => {
       opacity: 1,
       depthOffsetPx: 0,
     });
-    expect(motion["secondary-left"].opacity).toBeCloseTo(0.8965, 3);
-    expect(motion["secondary-right"].opacity).toBeCloseTo(0.8528, 3);
+    expect(motion["secondary-left"].opacity).toBeGreaterThan(
+      booksSceneMotionConfig.desktop.enter["secondary-left"].opacity,
+    );
+    expect(motion["secondary-left"].opacity).toBeLessThan(
+      booksSceneMotionConfig.desktop.hold["secondary-left"].opacity,
+    );
+    expect(motion["secondary-right"].opacity).toBeGreaterThan(
+      booksSceneMotionConfig.desktop.enter["secondary-right"].opacity,
+    );
+    expect(motion["secondary-right"].opacity).toBeLessThan(
+      booksSceneMotionConfig.desktop.hold["secondary-right"].opacity,
+    );
     expect(motion["secondary-left"].opacity).toBeGreaterThan(
       motion["secondary-right"].opacity,
     );
@@ -147,6 +157,47 @@ describe("BooksSceneMotion", () => {
     ).toEqual(booksSceneMotionConfig.mobile.hold);
   });
 
+  it("exposes a readable title band on both supporting covers without giving them primary weight", () => {
+    const desktop = resolveBooksCoverMotion({
+      progress: 0.51,
+      reducedMotion: false,
+      viewportWidth: 1440,
+    });
+    const mobile = resolveBooksCoverMotion({
+      progress: 0.51,
+      reducedMotion: false,
+      viewportWidth: 390,
+    });
+
+    expect(desktop["secondary-left"]).toMatchObject({
+      translateX: -180,
+      scale: 0.82,
+      opacity: 0.92,
+    });
+    expect(desktop["secondary-right"]).toMatchObject({
+      translateX: 215,
+      translateY: -90,
+      scale: 0.74,
+      opacity: 0.86,
+    });
+    expect(mobile["secondary-left"]).toMatchObject({
+      translateX: -86,
+      scale: 0.76,
+      opacity: 0.92,
+    });
+    expect(mobile["secondary-right"]).toMatchObject({
+      translateX: 117,
+      translateY: -72,
+      scale: 0.68,
+      opacity: 0.86,
+    });
+
+    expectSupportingExposure(desktop, 280, 0.64, 0.84);
+    expectSupportingExposure(mobile, 167, 0.48, 0.78);
+    expectSupportingRightTitleBand(desktop, 280 * 1.5, 32);
+    expectSupportingRightTitleBand(mobile, 167 * 1.5, 24);
+  });
+
   it("preserves the same roles on mobile with smaller translation amplitude", () => {
     const desktop = resolveBooksCoverMotion({
       progress: 0.15,
@@ -192,3 +243,44 @@ describe("BooksSceneMotion", () => {
     expect(after).toEqual(booksSceneMotionConfig.desktop.depart);
   });
 });
+
+function expectSupportingExposure(
+  motion: ReturnType<typeof resolveBooksCoverMotion>,
+  coverWidth: number,
+  minimumLeftFraction: number,
+  minimumRightFraction: number,
+): void {
+  const primaryLeft =
+    motion.primary.translateX - (coverWidth * motion.primary.scale) / 2;
+  const primaryRight =
+    motion.primary.translateX + (coverWidth * motion.primary.scale) / 2;
+  const left = motion["secondary-left"];
+  const right = motion["secondary-right"];
+  const leftWidth = coverWidth * left.scale;
+  const rightWidth = coverWidth * right.scale;
+  const leftEdge = left.translateX - leftWidth / 2;
+  const leftRight = left.translateX + leftWidth / 2;
+  const rightLeft = right.translateX - rightWidth / 2;
+  const rightEdge = right.translateX + rightWidth / 2;
+
+  expect((Math.min(primaryLeft, leftRight) - leftEdge) / leftWidth).toBeGreaterThanOrEqual(
+    minimumLeftFraction,
+  );
+  expect((rightEdge - Math.max(primaryRight, rightLeft)) / rightWidth).toBeGreaterThanOrEqual(
+    minimumRightFraction,
+  );
+}
+
+function expectSupportingRightTitleBand(
+  motion: ReturnType<typeof resolveBooksCoverMotion>,
+  coverHeight: number,
+  minimumPixels: number,
+): void {
+  const primaryTop =
+    motion.primary.translateY - (coverHeight * motion.primary.scale) / 2;
+  const right = motion["secondary-right"];
+  const rightTop =
+    right.translateY - (coverHeight * right.scale) / 2;
+
+  expect(primaryTop - rightTop).toBeGreaterThanOrEqual(minimumPixels);
+}

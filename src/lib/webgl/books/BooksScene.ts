@@ -1,6 +1,7 @@
 import type MotionSnapshotStore from "@/lib/motion/MotionSnapshotStore";
 import type { MotionFramePayload } from "@/lib/motion/types";
 import type AssetRegistry from "@/lib/webgl/AssetRegistry";
+import type { CameraIntent } from "@/lib/webgl/CameraIntent";
 import type DOMTracker from "@/lib/webgl/DOMTracker";
 import type GPUResourceManager from "@/lib/webgl/GPUResourceManager";
 import type { SceneIdentity, SceneModule } from "@/lib/webgl/SceneModule";
@@ -16,6 +17,7 @@ import {
 } from "@/lib/webgl/books/booksAssetManifest";
 import {
   BOOKS_COVER_STAGE_ANCHOR_ID,
+  BOOKS_CAMERA_INTENT_CONFIG,
   BOOKS_MOBILE_BREAKPOINT,
   BOOKS_SCENE_ANCHOR_ID,
   BOOKS_SCENE_ID,
@@ -264,6 +266,30 @@ export default class BooksScene implements SceneModule<BooksSceneState> {
     this.state = {
       ...this.state,
       visualReady: Boolean(ready),
+    };
+  }
+
+  getCameraIntent(): Readonly<CameraIntent> | null {
+    const anchorWorld = this.state.anchorWorld;
+    if (
+      !this.state.isActive ||
+      this.state.isCached ||
+      this.state.isDisposed ||
+      !this.state.isAnchored ||
+      !this.state.visualReady ||
+      !anchorWorld
+    ) {
+      return null;
+    }
+
+    return {
+      target: { ...anchorWorld },
+      positionOffset: {
+        ...BOOKS_CAMERA_INTENT_CONFIG.positionOffset,
+      },
+      fovIntent: BOOKS_CAMERA_INTENT_CONFIG.fovIntent,
+      depthBias: BOOKS_CAMERA_INTENT_CONFIG.depthBias,
+      weight: BOOKS_CAMERA_INTENT_CONFIG.weight,
     };
   }
 

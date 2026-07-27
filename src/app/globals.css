@@ -585,6 +585,19 @@ a {
   overflow: clip;
 }
 
+/* The three live WebGL covers sit behind the DOM-first archive. Once the
+ * grouped ready-active gate hides every fallback cover, remove only the
+ * Books surfaces that would blur or darken the global-canvas pixels. */
+.books-section:has(img[data-books-fallback-state="ready-active"]) {
+  background: transparent;
+  backdrop-filter: none;
+}
+
+.books-cover-stage:has(img[data-books-fallback-state="ready-active"]) {
+  background: transparent;
+  box-shadow: none;
+}
+
 .books-layout {
   display: grid;
   grid-template-columns: minmax(0, 0.92fr) minmax(22rem, 1.08fr);
@@ -1037,6 +1050,29 @@ a {
   outline-offset: 2px;
 }
 
+@media (max-width: 64rem) {
+  .books-layout {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "covers"
+      "reading"
+      "list";
+    gap: var(--space-8);
+  }
+
+  .books-reading {
+    max-inline-size: none;
+  }
+
+  .books-cover-stage {
+    position: relative;
+    inline-size: min(100%, 38rem);
+    justify-self: center;
+    aspect-ratio: 1 / 1.08;
+    margin-block-start: 3rem;
+  }
+}
+
 @media (max-width: 768px) {
   :root {
     --section-padding: 2.25rem 0;
@@ -1062,8 +1098,8 @@ a {
   .books-layout {
     grid-template-columns: minmax(0, 1fr);
     grid-template-areas:
-      "reading"
       "covers"
+      "reading"
       "list";
     gap: var(--space-8);
   }
@@ -1081,6 +1117,7 @@ a {
     inline-size: min(100%, 35rem);
     justify-self: center;
     aspect-ratio: 1 / 1.08;
+    margin-block-start: 3rem;
   }
 
   .books-cover {

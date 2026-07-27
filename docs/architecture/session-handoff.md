@@ -2,13 +2,17 @@
 
 ## 1. Current status
 
-- Current phase: P4-04 Books Scene.
-- Current task completed: P4-04 Batch 2 (`BooksScene`, three-cover renderer, and CPU/GPU integration).
+- Current phase: Release Candidate / Phase 4 Closure.
+- Current task completed: P4-04 Books Scene implementation, verification, final human visual sign-off, and closure.
+- Current decision gate: P4-04 is closed; the next gate is site-wide Release Candidate acceptance.
 - P4-03 About Scene: implemented, verified, human-signed, and closed.
 - P4-04 product direction: approved.
 - P4-04 Batch 1: content/DOM, manifest, development assets, and pure progress/motion implemented.
 - P4-04 Batch 2: implemented and verified against the accepted frozen E2E baseline.
-- Workspace note: this copied directory is not a Git repository, so no commit was created or claimed.
+- P4-04 Batch 3: implemented and verified against the same frozen E2E failure set.
+- P4-04 Batch 4: Desktop/Mobile composition tuning, final browser evidence, and the exhaustive frozen-baseline differential are complete.
+- P4-04 Books Scene: explicit Desktop/Mobile human visual acceptance received and phase closed.
+- Workspace note: the P4-04 archive source branch is `feat/p4-04-books-batch3`; branch merge and deployable release creation belong to Release Candidate closure.
 
 P4-04 authority:
 
@@ -246,7 +250,169 @@ Verification:
 - No Books, About, content, manifest, asset, motion, or unrelated check failed. No frozen Hero/Media/About runtime parameter or frozen threshold was changed.
 - The observed failure set equals the accepted frozen 11-item set, with no new failures and no material metric regression. The authoritative differential is `artifacts/p4-04-books-batch2/post-batch-e2e-differential.json`.
 
-## 10. Next session start
+## 10. P4-04 Batch 3 implementation and verification
+
+Batch 3 is complete.
+
+Implemented:
+
+- `BooksScene.getCameraIntent()` with fixed FOV `48`, fixed `0.35` camera
+  offset, `-0.15` depth bias, and the measured Books world anchor as target;
+- formal `QuoteBooksPolicy` orchestration in `SceneDirector`;
+- About dominance protection while Books is only preloading;
+- News and Quote as DOM-only `global-idle` intervals;
+- Books preload, activation request, all-cover resource gate, dominant commit,
+  cache, reverse, cached re-entry, fast jump, and reduced-motion convergence;
+- removal of the Batch 2 manual lifecycle bridge from `ExperienceRoot`;
+- five-state all-or-nothing fallback for all three cover images;
+- Books context loss and restore with fallback-before-disposal ordering;
+- stable browser probe exposure for real E2E inspection;
+- Next development-origin configuration for the canonical
+  `http://127.0.0.1:3100/` evidence URL.
+
+Readiness is intentionally split as specified by the implementation plan:
+renderer resource readiness (`3 textures / 3 materials / 1 geometry`) permits
+the existing atomic registry activation, while fallback hiding additionally
+requires all three covers to be rendered, visible, frustum-valid, and
+positive-area in the active dominant composition.
+
+Verified resource budget after activation and context restore:
+
+- three active CPU asset owners, each count `1`;
+- three textures;
+- three materials;
+- one shared geometry;
+- three meshes;
+- seven GPU leases;
+- approximately three Books draw calls.
+
+Verification:
+
+- lint: zero errors; five pre-existing unrelated warnings;
+- typecheck: pass;
+- unit: `49 files / 298 tests` after the final Director regression test;
+- production build: pass;
+- Books Batch 3 focused browser suite: `10/10`;
+- Books recordings: `6/6`;
+- About E2E: `12/12`;
+- full E2E, including exhaustive continuation after the existing serial
+  describe stopped at its first frozen failure:
+  `64 discovered / 52 passed / 11 failed / 1 existing skip`;
+- observed failures equal the exact frozen Hero/Media 11-item set;
+- vacuum topology remains the frozen `15 / 10 / 15 / 10` frame counts;
+- no assertion, skip rule, Hero/Media parameter, or threshold was changed.
+
+Evidence:
+
+- `artifacts/p4-04-books-batch3/full-e2e-differential.json`;
+- 20 required Desktop/Mobile named screenshots plus context-loss evidence;
+- six Desktop/Mobile WebM recordings;
+- browser logs and normalized complete E2E logs in
+  `artifacts/p4-04-books-batch3/`.
+
+## 11. P4-04 Batch 4 implementation and closure
+
+Batch 4 implementation and automated verification are complete. The user has
+explicitly approved the final Desktop and Mobile browser evidence, so P4-04
+Books Scene is closed.
+
+Composition changes are deliberately limited to Books:
+
+- the ready-active Books section and cover stage stop applying the translucent
+  surface and backdrop blur that softened the shared Canvas;
+- Mobile visually orders the normal-flow cover stage before the DOM reading
+  archive while preserving semantic DOM order;
+- Books switches to the same stage-first single-column normal flow at
+  `64rem` and below; `800 x 900` and `1024 x 900` evidence proves all three
+  projected covers remain inside the stage and outside the reading column;
+- Mobile reserves `3rem` above the stage so the right supporting title remains
+  below the sticky site header;
+- only Books cover `translateX`, `translateY`, `scale`, `opacity`, and existing
+  depth values were tuned;
+- CameraIntent, SceneDirector, visual-ready, lifecycle, resource ownership,
+  renderer, camera, RAF, Hero, Media, and About parameters were not changed by
+  Batch 4.
+
+Representative hold metrics:
+
+- Desktop primary / left / right bounds:
+  `[904.929, 1180.633, 192.683, 606.239]`,
+  `[751.287, 974.275, 260.220, 594.702]`,
+  `[1157.556, 1358.007, 159.123, 459.799]`;
+- Desktop areas: `114018.843 / 74585.701 / 60270.859`; opacities:
+  `1 / 0.92 / 0.86`; supporting exposure: `0.689015 / 0.884873`;
+- Mobile primary / left / right bounds:
+  `[111.589, 278.411, 112.265, 362.496]`,
+  `[46.309, 171.768, 163.296, 351.483]`,
+  `[255.892, 367.921, 81.486, 249.527]`;
+- Mobile areas: `41743.836 / 23609.863 / 18825.585`; opacities:
+  `1 / 0.9198 / 0.8597`; supporting exposure: `0.520328 / 0.798994`;
+- Quote visible area and horizontal overflow are both zero on both viewports;
+  Desktop CTA visible area is `7854`;
+- forward/reverse maximum projected-bound deltas are approximately
+  `0.000012px` Desktop and `0.001035px` Mobile.
+
+Resource and compositing evidence remains within the locked architecture:
+
+- one Canvas, one renderer, one camera, and one RAF;
+- three Books draw calls;
+- three active CPU cover owners, each count `1`;
+- seven Books GPU leases: three textures, one geometry, three materials;
+- ready-active fallback opacity is atomically `0 / 0 / 0`;
+- unavailable and context-lost fallback opacity is atomically `1 / 1 / 1`;
+- context restore returns to the same bounds and owner counts;
+- normal composited and Canvas-only cover bounds are equal, and visual review
+  confirms the normal page no longer darkens or blurs the covers.
+
+Final evidence is stored under `artifacts/p4-04-books-batch4/final/`:
+
+- 30 named Desktop/Mobile PNG state captures plus two metrics JSON files;
+- 16 named WebM journeys, eight per viewport;
+- a structured artifact manifest records every required named file with
+  viewport, direction, progress/phase, reduced-motion, fallback, and context
+  metadata, and reports `50 / 50` required named artifacts with zero missing;
+- `ffprobe` confirms every Desktop recording is `1440 x 900` and every Mobile
+  recording is `390 x 844`, all VP8 `yuv420p`, without letterboxing;
+- manual contact-sheet review covers forward, reverse, enter/hold/depart, fast,
+  reduced-motion, unavailable, context-loss, and restore paths.
+
+Verification:
+
+- lint: zero errors and the same five pre-existing unrelated warnings;
+- typecheck: pass;
+- unit: `49 files / 299 tests`;
+- production build: pass;
+- complete About + Books focused E2E: `45 / 45`;
+- complete E2E with per-declaration continuation after the serial stop:
+  `76 discovered / 64 passed / 11 failed / 1 existing skip / 0 omitted`;
+- the failure set exactly equals the frozen Hero/Media 11-item set;
+- the visual-vacuum topology remains `15 / 10 / 15 / 10` frames;
+- no assertion, threshold, skip rule, or frozen Hero/Media parameter changed.
+
+The authoritative differential is:
+
+```text
+artifacts/p4-04-books-batch4/full-e2e-differential.json
+```
+
+System Chrome was also used for independent visual capture. Its RAF/rendering
+cadence exposed three strict legacy About subpixel timing assertions, while
+the project-standard Playwright Chromium passed the same About set `8 / 8`.
+The final focused and full aggregates use the project-standard Chromium so
+they remain comparable to the frozen baseline; no About code or threshold was
+changed.
+
+The Codex visual review found none of the ten closure blockers in the Batch 4
+brief, and the final human visual review accepted the Desktop and Mobile
+composition. Forward, reverse, fast-scroll, reduced-motion, grouped fallback,
+and context lost/restore behavior are accepted.
+
+The current development covers contain minor compression detail that does not
+block closure. Production cover replacement requires a Books-only art review.
+The frozen 11 Hero/Media E2E failures and the preload-only reverse lifecycle
+Minor remain independent Release Candidate technical debt.
+
+## 12. Next phase start
 
 Read in this order:
 
@@ -259,11 +425,27 @@ Read in this order:
 7. `docs/superpowers/specs/2026-07-27-p4-04-books-scene-design.md`
 8. `docs/superpowers/plans/2026-07-27-p4-04-books-scene-implementation-plan.md`
 
-Begin Batch 3 with Books CameraIntent and formal Quote → Books orchestration. Then integrate the formal grouped DOM fallback and context-restoration policy. Remove the clearly marked Batch 2 development lifecycle bridge when the formal orchestration replaces it.
+The next phase is:
 
-Do not recreate the Batch 1/2 manifest, progress, motion, scene, renderer, or resource-owner interfaces. Do not modify Hero, Media, or About thresholds/resources to make Books tests pass, and keep frozen-runtime baselines separate from Books regressions.
+```text
+Release Candidate / Phase 4 Closure
+```
 
-## 11. P4-04 Batch 2 differential gate
+Do not create or name a P4-05 Scene. Chapter development has ended. Start with:
+
+1. a site-wide Hero-to-Books browser acceptance pass;
+2. resolution or formal adjudication of the frozen 11 Hero/Media E2E failures;
+3. the preload-only reverse lifecycle Minor;
+4. the five remaining lint warnings;
+5. SEO, navigation, accessibility, and production-build checks;
+6. the production-asset replacement checklist and release acceptance;
+7. feature-branch merge and deployable version creation.
+
+P4-04 remains closed during this work. A production cover replacement triggers
+only a Books-specific art review unless new evidence identifies a separate
+runtime regression.
+
+## 13. P4-04 Batch 2, Batch 3, and Batch 4 differential gate
 
 Batch 2 is explicitly authorized against the frozen 11-failure record in:
 
@@ -280,4 +462,15 @@ The final repository-wide E2E result is accepted only when all of the following 
 
 The two failures with direct pre-Batch proof are classified as `confirmed-earlier-baseline`. The other nine are classified as `current-baseline-without-historical-proof`; they are accepted only as a frozen differential baseline for Batch 2, not represented as historically proven regressions.
 
-Batch 2 satisfies this differential gate. The failure set is exactly the frozen 11-item set; all newly added Books tests and all About tests pass; repeat vacuum measurements retain the frozen 15-frame mobile / 10-frame desktop topology; and no assertion, skip policy, or frozen Hero/Media parameter was changed to produce the result.
+Batch 2 and Batch 3 satisfy this differential gate. The Batch 3 aggregate is
+`64 / 52 / 11 / 1`; its failure set is exactly the frozen 11-item set. All
+newly added Books tests and all About tests pass; repeat vacuum measurements
+retain the frozen 15-frame mobile / 10-frame desktop topology; and no
+assertion, skip policy, or frozen Hero/Media parameter was changed to produce
+the result.
+
+Batch 4 also satisfies the gate. Its exhaustive aggregate is
+`76 / 64 / 11 / 1`, with zero omitted serial-tail tests. The 12 additional
+Batch 4 tests all pass, all About and Books focused tests pass, the failure set
+remains exactly the same frozen 11 items, and the deterministic vacuum topology
+remains unchanged.

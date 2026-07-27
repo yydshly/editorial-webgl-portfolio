@@ -256,6 +256,85 @@ describe("BooksScene foundation", () => {
     boundingClientRect.mockRestore();
   });
 
+  it("exposes a stable CameraIntent only while Books is active, anchored, and visual-ready", async () => {
+    const { scene } = createHarness();
+    await scene.preload();
+
+    scene.setVisualReady(true);
+    expect(getCameraIntent(scene)).toBeNull();
+
+    scene.activate();
+    expect(getCameraIntent(scene)).toBeNull();
+
+    scene.update(FRAME);
+    scene.setVisualReady(false);
+    expect(getCameraIntent(scene)).toBeNull();
+
+    scene.setVisualReady(true);
+    expect(getCameraIntent(scene)).toEqual({
+      target: { x: 2.4, y: 0, z: -8 },
+      positionOffset: { x: 0, y: 0, z: 0.35 },
+      fovIntent: 48,
+      depthBias: -0.15,
+      weight: 1,
+    });
+
+    scene.deactivate();
+    expect(getCameraIntent(scene)).toBeNull();
+
+    scene.dispose();
+    expect(getCameraIntent(scene)).toBeNull();
+  });
+
+  it("keeps CameraIntent history-independent across progress, fast jumps, and reverse updates", async () => {
+    const { scene, setSectionAnchor } = createHarness();
+    await scene.preload();
+    scene.activate();
+    scene.setVisualReady(true);
+
+    const intents = [0, 0.5, 1, 0.5].map((progress, index) => {
+      setSectionAnchor(createSectionAnchor(progress));
+      scene.update({
+        ...FRAME,
+        frame: index + 1,
+        timestamp: (index + 1) * 16,
+      });
+      return getCameraIntent(scene);
+    });
+
+    expect(intents.every((intent) => intent !== null)).toBe(true);
+    expect(intents[1]).toEqual(intents[3]);
+    expect(intents[0]).toEqual(intents[1]);
+    expect(intents[1]).toEqual(intents[2]);
+    expect(intents[0]).not.toBe(intents[1]);
+    expect(intents[0]?.target).not.toBe(intents[1]?.target);
+    expect(intents[0]?.positionOffset).not.toBe(
+      intents[1]?.positionOffset,
+    );
+  });
+
+  it("uses the same fixed hold CameraIntent for reduced motion without owning a Camera", async () => {
+    const { scene } = createHarness({
+      width: 390,
+      height: 844,
+      reducedMotion: true,
+      stageAnchor: createStageAnchor(300, 420),
+    });
+    await scene.preload();
+    scene.activate();
+    scene.update(FRAME);
+    scene.setVisualReady(true);
+
+    expect(getCameraIntent(scene)).toEqual({
+      target: { x: 2.4, y: 0, z: -8 },
+      positionOffset: { x: 0, y: 0, z: 0.35 },
+      fovIntent: 48,
+      depthBias: -0.15,
+      weight: 1,
+    });
+    expect("camera" in scene).toBe(false);
+  });
+
   it("caches on deactivate, preserves leases, and stops visible updates", async () => {
     const { assetRegistry, scene, setSectionAnchor } = createHarness();
     await scene.preload();

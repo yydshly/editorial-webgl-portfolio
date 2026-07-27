@@ -1,8 +1,11 @@
 # Project Handoff
 
-## Current phase: P4-04 Books Scene design and implementation planning
+## Current phase: Release Candidate / Phase 4 Closure
 
-P4-03 About Scene is closed. P4-04 Books product design is approved, and its design specification and implementation plan are now the next-phase authority. No P4-04 business code, tests, CSS, runtime, renderer, or assets have been implemented in the P4-04-00 documentation task.
+P4-03 About Scene and P4-04 Books Scene are closed. P4-04 Batches 1-4 are
+implemented and verified, and the final Desktop and Mobile browser evidence
+has received explicit human visual sign-off. Chapter development is complete;
+the project now enters site-wide Release Candidate / Phase 4 Closure.
 
 Authority:
 
@@ -23,6 +26,11 @@ Authority:
 - P4-02: Media Composition Tuning complete and closed.
 - P4-03: About Scene complete and closed.
 - P4-04-00: Books Scene product design and implementation plan complete.
+- P4-04 Batch 1: content, DOM, assets, manifest, progress, and motion complete.
+- P4-04 Batch 2: Books Scene, renderer, CPU/GPU ownership, and base Desktop/Mobile composition complete.
+- P4-04 Batch 3: CameraIntent, formal orchestration, grouped fallback, context restore, evidence, and frozen differential complete.
+- P4-04 Batch 4: Desktop/Mobile composition tuning, final evidence, and human visual sign-off complete.
+- P4-04 Books Scene: closed.
 
 ## P4-03 About Scene closure
 
@@ -118,7 +126,101 @@ About exits and caches
 
 There is no About-to-Books overlap, blend, or direct camera handoff across News/Quote. DOM fallback remains visible while Books assets or GPU resources are not fully ready.
 
-## Next implementation entry
+## Next phase entry
+
+The next phase is:
+
+```text
+Release Candidate / Phase 4 Closure
+```
+
+It is not a P4-05 Scene and must not introduce another spatial chapter.
+The entry scope is:
+
+1. complete a site-wide Hero-to-Books browser acceptance pass;
+2. resolve or formally adjudicate the 11 frozen Hero/Media E2E failures;
+3. address the preload-only reverse lifecycle Minor;
+4. remove the five remaining lint warnings;
+5. complete SEO, navigation, accessibility, and production-build checks;
+6. prepare the production-asset replacement checklist and release acceptance;
+7. merge the feature branch and produce a deployable version.
+
+## P4-04 Batch 3 verified result
+
+`BooksScene` emits its stable intent only while active, anchored,
+resource-ready, and not cached/disposed. `SceneDirector` formally resolves:
+
+```text
+About dominant/cache
+  -> News / Quote DOM-only global-idle
+  -> Books preload
+  -> activation request
+  -> all-cover resource gate
+  -> Books dominant
+  -> forward/reverse cache and global-idle
+  -> cached re-entry
+```
+
+The old Batch 2 `ExperienceRoot` lifecycle bridge is removed. The five-state
+fallback is atomic across all three DOM covers, and context restore returns to
+exactly three CPU owners and seven GPU leases (`3 / 1 / 3`) before fallback
+pixels hide.
+
+Desktop and Mobile screenshots cover Quote hold, first active, visual-ready,
+dominant, hold, reverse Quote, fast final, reduced-motion hold, unavailable,
+and restored states. Six recordings cover the full journey, fast scroll, and
+reduced motion on both viewports.
+
+Engineering result:
+
+- lint zero errors;
+- typecheck, unit, and production build pass;
+- Books focused E2E `10/10`;
+- About E2E `12/12`;
+- complete E2E `64 discovered / 52 passed / 11 frozen failed / 1 existing
+  skip`, with no new failure and unchanged failure topology.
+
+The authoritative differential and browser artifacts are in
+`artifacts/p4-04-books-batch3/`.
+
+## P4-04 Books Scene closure
+
+P4-04 Books Scene is closed with explicit final human visual sign-off.
+
+Accepted behavior:
+
+- Desktop and Mobile composition;
+- one-primary/two-supporting cover hierarchy;
+- normal DOM/WebGL compositing;
+- forward, reverse, and fast-scroll convergence;
+- reduced-motion hold behavior;
+- grouped fallback behavior;
+- context lost and restore behavior;
+- verified CPU/GPU ownership and performance budget.
+
+The locked runtime architecture remains unchanged:
+
+- DOM-first content and fallback;
+- one global Canvas;
+- one global `THREE.WebGLRenderer`;
+- one Camera owned by `CameraRig`;
+- one RAF owned by `FrameCoordinator`;
+- Three.js native runtime with no R3F path.
+
+The current development covers contain minor compression detail that does not
+block closure. Replacing them with production covers requires a Books-only art
+review and does not otherwise reopen P4-04.
+
+The following remain independent Release Candidate technical debt and do not
+block P4-04 closure:
+
+- the frozen 11 Hero/Media E2E failures;
+- the preload-only reverse lifecycle Minor.
+
+## Superseded P4-04 Batch 1 entry (historical)
+
+The following Batch 1 instructions are retained only as phase history and are
+not the current implementation entry.
 
 P4-04 Batch 1 starts at Task 1 of the implementation plan:
 
