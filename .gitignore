@@ -1,0 +1,60 @@
+# dependencies
+/node_modules
+/node_modules.pnpm_backup
+
+# local package caches
+/.npm_cache
+/.pnpm-store
+/local-npm-cache
+
+# next.js
+/.next
+/out
+
+# testing
+/coverage
+/playwright-report
+/test-results
+
+# generated visual and test evidence
+/artifacts/**
+!/artifacts/p4-04-books-batch1/
+/artifacts/p4-04-books-batch1/**
+!/artifacts/p4-04-books-batch1/frozen-e2e-baseline.json
+!/artifacts/p4-04-books-batch2/
+/artifacts/p4-04-books-batch2/**
+!/artifacts/p4-04-books-batch2/coverage-manifest.md
+!/artifacts/p4-04-books-batch2/design-contract.md
+!/artifacts/p4-04-books-batch2/post-batch-e2e-differential.json
+
+# local environment
+.env*
+!.env.example
+
+# logs
+*.log
+*.pid
+
+# local scratch and one-off generation inputs
+/.tmp
+/.tmp-*
+/tmp-*
+/scripts/generate-books-covers.mjs
+/public/assets/hero - 副本
+/public/assets/media/source
+
+# package manager
+/package-lock.json
+
+# operating system
+.DS_Store
+Thumbs.db
+
+# editors
+/.idea
+/.vscode
+*.swp
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts

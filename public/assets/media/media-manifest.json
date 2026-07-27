@@ -1,0 +1,85 @@
+{
+  "version": 1,
+  "mobileBreakpoint": 768,
+  "placeholder": true,
+  "assets": [
+    {
+      "assetId": "media-stage",
+      "semanticSlot": "main",
+      "desktop": {
+        "path": "/assets/media/media-stage-desktop.webp",
+        "width": 1280,
+        "height": 800
+      },
+      "mobile": {
+        "path": "/assets/media/media-stage-mobile.webp",
+        "width": 900,
+        "height": 563
+      },
+      "aspectRatio": {
+        "desktop": "8:5",
+        "mobile": "8:5"
+      },
+      "focalPoint": {
+        "desktop": {
+          "x": 0.55,
+          "y": 0.52
+        },
+        "mobile": {
+          "x": 0.42,
+          "y": 0.5
+        }
+      },
+      "portraitCoverage": {
+        "desktop": 0.75,
+        "mobile": 0.72
+      },
+      "cropIntent": "editorial-stage-main-r3",
+      "grade": {
+        "midtoneExposureEV": 0.3,
+        "subjectMidtoneExposureEV": 0.12,
+        "preserveHighlights": true,
+        "preserveStageBlack": true
+      },
+      "format": "webp",
+      "colorSpace": "sRGB",
+      "placeholder": true
+    },
+    {
+      "assetId": "media-studio",
+      "semanticSlot": "secondary",
+      "desktop": {
+        "path": "/assets/media/media-studio-desktop.webp",
+        "width": 1280,
+        "height": 800
+      },
+      "mobile": {
+        "path": "/assets/media/media-studio-mobile.webp",
+        "width": 900,
+        "height": 563
+      },
+      "aspectRatio": {
+        "desktop": "8:5",
+        "mobile": "8:5"
+      },
+      "focalPoint": {
+        "desktop": {
+          "x": 0.28,
+          "y": 0.34
+        },
+        "mobile": {
+          "x": 0.2,
+          "y": 0.31
+        }
+      },
+      "portraitCoverage": {
+        "desktop": 0.68,
+        "mobile": 0.66
+      },
+      "cropIntent": "studio-left-readable-r3",
+      "format": "webp",
+      "colorSpace": "sRGB",
+      "placeholder": true
+    }
+  ]
+}

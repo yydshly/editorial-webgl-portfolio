@@ -1,0 +1,186 @@
+{
+  "baselineId": "p4-04-books-batch1-frozen-e2e-2026-07-27",
+  "recordedAt": "2026-07-27",
+  "execution": {
+    "discovered": 48,
+    "passed": 36,
+    "failed": 11,
+    "explicitlySkipped": 1,
+    "newBooksTestsPassed": 2,
+    "aboutTestsPassed": 12,
+    "authoritativeRuns": [
+      "artifacts/p4-04-books-batch2/final-full-e2e-serial.stdout.log",
+      "artifacts/p4-04-books-batch2/final-full-e2e-serial-continuations.stdout.log",
+      "artifacts/p4-04-books-batch2/vacuum-repeat.stdout.log"
+    ],
+    "note": "The full suite's existing serial Browser describe stops after its first failure. Every one of the 18 serial-not-run Browser cases was therefore executed individually without changing or skipping its original assertions."
+  },
+  "failureSet": [
+    {
+      "id": "media-secondary-projected-exposure",
+      "category": "confirmed-earlier-baseline",
+      "baseline": {
+        "exposureRatio": 0.170247,
+        "focalPointX": 0.28,
+        "secondaryExposedAssetFraction": 0.2466555550194082
+      },
+      "postBatch": {
+        "exposureRatio": 0.17019339393574406,
+        "focalPointX": 0.28,
+        "secondaryExposedAssetFraction": 0.24664217199246302
+      },
+      "assessment": "stable"
+    },
+    {
+      "id": "media-hold-composition-area",
+      "category": "current-baseline-without-historical-proof",
+      "baseline": {
+        "mainAreaPx": 79897.49867738078
+      },
+      "postBatch": {
+        "mainAreaPx": 80122.45040931007
+      },
+      "assessment": "stable; 0.28% headless projection variance"
+    },
+    {
+      "id": "reduced-motion-scene-switch-dominance",
+      "category": "current-baseline-without-historical-proof",
+      "baseline": {
+        "dominantSceneId": "hero-scene"
+      },
+      "postBatch": {
+        "dominantSceneId": "hero-scene"
+      },
+      "assessment": "identical"
+    },
+    {
+      "id": "mobile-reduced-motion-visual-vacuum",
+      "category": "current-baseline-without-historical-proof",
+      "baseline": {
+        "longestRunFrames": 15,
+        "longestRunDurationMs": 249.89999999999964
+      },
+      "postBatchFinal": {
+        "longestRunFrames": 15,
+        "longestRunDurationMs": 250.0999999999999
+      },
+      "assessment": "stable"
+    },
+    {
+      "id": "desktop-reduced-motion-visual-vacuum",
+      "category": "current-baseline-without-historical-proof",
+      "baseline": {
+        "longestRunFrames": 10,
+        "longestRunDurationMs": 616.6000000000004
+      },
+      "postBatchFinal": {
+        "longestRunFrames": 10,
+        "longestRunDurationMs": 500
+      },
+      "assessment": "same frame topology; lower repeat duration"
+    },
+    {
+      "id": "mobile-normal-forward-reverse-visual-vacuum",
+      "category": "current-baseline-without-historical-proof",
+      "baseline": {
+        "longestRunFrames": 15,
+        "longestRunDurationMs": 250
+      },
+      "postBatchFinal": {
+        "longestRunFrames": 15,
+        "longestRunDurationMs": 250.10000000000036
+      },
+      "assessment": "identical"
+    },
+    {
+      "id": "desktop-normal-forward-reverse-visual-vacuum",
+      "category": "confirmed-earlier-baseline",
+      "baseline": {
+        "longestRunFrames": 10,
+        "longestRunDurationMs": 549.8999999999996
+      },
+      "postBatchFinal": {
+        "longestRunFrames": 10,
+        "longestRunDurationMs": 583.3999999999996
+      },
+      "confirmatoryRepeat": {
+        "longestRunFrames": 10,
+        "longestRunDurationMs": 549.9000000000005
+      },
+      "assessment": "same 10-frame topology; repeat is identical within timer precision and final wall-clock variance is scheduler-bound"
+    },
+    {
+      "id": "fast-jump-one-frame-coherence",
+      "category": "current-baseline-without-historical-proof",
+      "baseline": {
+        "direction": "forward",
+        "frame": 1,
+        "heroOrMediaRecognizable": false,
+        "transitionPhase": "cache",
+        "handoffProgress": 0.7399488304093568,
+        "dominantSceneId": null
+      },
+      "postBatch": {
+        "direction": "forward",
+        "frame": 1,
+        "heroOrMediaRecognizable": false,
+        "transitionPhase": "cache",
+        "handoffProgress": 0.7399488304093568,
+        "dominantSceneId": null
+      },
+      "assessment": "identical"
+    },
+    {
+      "id": "media-fallback-active-ready",
+      "category": "current-baseline-without-historical-proof",
+      "baseline": {
+        "pollResult": false,
+        "timeoutMs": 5000
+      },
+      "postBatch": {
+        "pollResult": false,
+        "timeoutMs": 5000
+      },
+      "assessment": "identical"
+    },
+    {
+      "id": "media-fallback-after-delayed-texture-load",
+      "category": "current-baseline-without-historical-proof",
+      "baseline": {
+        "pollResult": false,
+        "timeoutMs": 5000
+      },
+      "postBatch": {
+        "pollResult": false,
+        "timeoutMs": 5000
+      },
+      "assessment": "identical"
+    },
+    {
+      "id": "media-fallback-context-loss-precondition",
+      "category": "current-baseline-without-historical-proof",
+      "baseline": {
+        "pollResult": false,
+        "timeoutMs": 5000,
+        "contextLossStepReached": false
+      },
+      "postBatch": {
+        "pollResult": false,
+        "timeoutMs": 5000,
+        "contextLossStepReached": false
+      },
+      "assessment": "identical"
+    }
+  ],
+  "gate": {
+    "failureSetIsSubsetOfFrozen11": true,
+    "failureSetEqualsFrozen11": true,
+    "newFailures": [],
+    "booksFailures": [],
+    "aboutFailures": [],
+    "frozenMetricsMateriallyWorse": false,
+    "assertionsWeakened": false,
+    "testsSkippedToMaintainBaseline": false,
+    "heroMediaRuntimeParametersChanged": false
+  }
+}

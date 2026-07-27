@@ -1,0 +1,89 @@
+{
+  "assetId": "hero-portrait-placeholder",
+  "master": {
+    "path": "/assets/hero/hero-placeholder-master.png",
+    "format": "png",
+    "width": 1024,
+    "height": 1536,
+    "sizeBytes": 2221084,
+    "hasAlpha": true
+  },
+  "desktop": {
+    "path": "/assets/hero/hero-placeholder-desktop.webp",
+    "format": "webp",
+    "width": 1024,
+    "height": 1536,
+    "sizeBytes": 106738,
+    "alphaPreserved": true,
+    "encoding": {
+      "quality": 82,
+      "compression": "lossy",
+      "pixFmt": "yuva420p"
+    }
+  },
+  "mobile": {
+    "path": "/assets/hero/hero-placeholder-mobile.webp",
+    "format": "webp",
+    "width": 760,
+    "height": 1536,
+    "sizeBytes": 98878,
+    "alphaPreserved": true,
+    "crop": {
+      "strategy": "right-biased side crop",
+      "focus": "preserve subject mass",
+      "x": 264,
+      "y": 0,
+      "width": 760,
+      "height": 1536
+    },
+    "encoding": {
+      "quality": 78,
+      "compression": "lossy",
+      "pixFmt": "yuva420p"
+    }
+  },
+  "placeholder": true,
+  "portraitLayer": {
+    "role": "portrait",
+    "singlePlaneReady": true,
+    "requiresTransparent": true,
+    "desktop": {
+      "maxDisplayWidthPx": 420,
+      "anchorMatch": "hero-section-right"
+    },
+    "mobile": {
+      "maxDisplayWidthPx": 320,
+      "anchorMatch": "hero-section-right"
+    }
+  },
+  "foregroundCrop": {
+    "enabled": true,
+    "sourceTexture": "portrait",
+    "uvOrigin": "top-left",
+    "uvRect": {
+      "desktop": {
+        "uMin": 0.2734375,
+        "uMax": 0.48828125,
+        "vMin": 0.4231770833333333,
+        "vMax": 0.703125
+      },
+      "mobile": {
+        "uMin": 0.021052631578947368,
+        "uMax": 0.3105263157894737,
+        "vMin": 0.4231770833333333,
+        "vMax": 0.703125
+      }
+    },
+    "sourceRectPixels": {
+      "space": "master",
+      "x": 280,
+      "y": 650,
+      "width": 220,
+      "height": 430
+    },
+    "region": {
+      "name": "right-hand-microphone"
+    },
+    "nextPhase": "p4-01-foreground-uv-crop"
+  }
+}

@@ -1,0 +1,105 @@
+{
+  "seriesId": "field-notes",
+  "seriesLabel": "FIELD NOTES",
+  "seriesLabelZh": "在场档案",
+  "author": "DEV-HOST-01",
+  "status": "development",
+  "assetAvailability": "packaged",
+  "mobileBreakpoint": 768,
+  "colorSpace": "sRGB",
+  "covers": [
+    {
+      "id": "people-in-the-room",
+      "title": "在场的人",
+      "subtitle": "People in the Room",
+      "author": "DEV-HOST-01",
+      "series": "FIELD NOTES",
+      "status": "development",
+      "visualRole": "primary",
+      "visualSubject": "person-led",
+      "masterSemanticId": "field-notes:people-in-the-room:v1",
+      "source": {
+        "path": "/assets/books/people-in-the-room-master.png",
+        "width": 1200,
+        "height": 1800
+      },
+      "desktop": {
+        "path": "/assets/books/people-in-the-room-desktop.webp",
+        "width": 1000,
+        "height": 1500,
+        "crop": { "x": 0, "y": 0, "width": 1, "height": 1 }
+      },
+      "mobile": {
+        "path": "/assets/books/people-in-the-room-mobile.webp",
+        "width": 800,
+        "height": 1200,
+        "crop": { "x": 0, "y": 0, "width": 1, "height": 1 }
+      },
+      "focalPoint": { "x": 0.5, "y": 0.44 },
+      "expectedCoverBounds": { "x": 0, "y": 0, "width": 1, "height": 1 },
+      "colorSpace": "sRGB"
+    },
+    {
+      "id": "between-the-cities",
+      "title": "城市之间",
+      "subtitle": "Between the Cities",
+      "author": "DEV-HOST-01",
+      "series": "FIELD NOTES",
+      "status": "development",
+      "visualRole": "secondary-left",
+      "visualSubject": "scene-led",
+      "masterSemanticId": "field-notes:between-the-cities:v1",
+      "source": {
+        "path": "/assets/books/between-the-cities-master.png",
+        "width": 1200,
+        "height": 1800
+      },
+      "desktop": {
+        "path": "/assets/books/between-the-cities-desktop.webp",
+        "width": 1000,
+        "height": 1500,
+        "crop": { "x": 0, "y": 0, "width": 1, "height": 1 }
+      },
+      "mobile": {
+        "path": "/assets/books/between-the-cities-mobile.webp",
+        "width": 800,
+        "height": 1200,
+        "crop": { "x": 0, "y": 0, "width": 1, "height": 1 }
+      },
+      "focalPoint": { "x": 0.5, "y": 0.5 },
+      "expectedCoverBounds": { "x": 0, "y": 0, "width": 1, "height": 1 },
+      "colorSpace": "sRGB"
+    },
+    {
+      "id": "hearing-one-another",
+      "title": "彼此听见",
+      "subtitle": "Hearing One Another",
+      "author": "DEV-HOST-01",
+      "series": "FIELD NOTES",
+      "status": "development",
+      "visualRole": "secondary-right",
+      "visualSubject": "relationship-led",
+      "masterSemanticId": "field-notes:hearing-one-another:v1",
+      "source": {
+        "path": "/assets/books/hearing-one-another-master.png",
+        "width": 1200,
+        "height": 1800
+      },
+      "desktop": {
+        "path": "/assets/books/hearing-one-another-desktop.webp",
+        "width": 1000,
+        "height": 1500,
+        "crop": { "x": 0, "y": 0, "width": 1, "height": 1 }
+      },
+      "mobile": {
+        "path": "/assets/books/hearing-one-another-mobile.webp",
+        "width": 800,
+        "height": 1200,
+        "crop": { "x": 0, "y": 0, "width": 1, "height": 1 }
+      },
+      "focalPoint": { "x": 0.48, "y": 0.45 },
+      "expectedCoverBounds": { "x": 0, "y": 0, "width": 1, "height": 1 },
+      "colorSpace": "sRGB"
+    }
+  ]
+}

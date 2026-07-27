@@ -1,0 +1,55 @@
+{
+  "assetId": "about-portrait-dev-host-01",
+  "identity": "DEV-HOST-01",
+  "status": "development",
+  "assetAvailability": "packaged",
+  "mobileBreakpoint": 768,
+  "master": {
+    "path": "/assets/about/about-portrait-master.png",
+    "width": 1122,
+    "height": 1402
+  },
+  "desktop": {
+    "path": "/assets/about/about-portrait-desktop.webp",
+    "width": 1024,
+    "height": 1280,
+    "crop": {
+      "x": 0,
+      "y": 0,
+      "width": 1,
+      "height": 1
+    },
+    "focalPoint": {
+      "x": 0.31,
+      "y": 0.34
+    }
+  },
+  "mobile": {
+    "path": "/assets/about/about-portrait-mobile.webp",
+    "width": 900,
+    "height": 1125,
+    "crop": {
+      "x": 0,
+      "y": 0.05,
+      "width": 0.9,
+      "height": 0.9
+    },
+    "focalPoint": {
+      "x": 0.31,
+      "y": 0.32
+    }
+  },
+  "subjectBounds": {
+    "x": 0.03,
+    "y": 0.15,
+    "width": 0.64,
+    "height": 0.82
+  },
+  "colorSpace": "sRGB",
+  "composition": {
+    "subjectPosition": "left",
+    "gazeDirection": "right",
+    "breathingRoom": "right",
+    "sameMasterSemantic": true
+  }
+}

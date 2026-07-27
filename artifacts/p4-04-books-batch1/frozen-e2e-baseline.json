@@ -1,0 +1,257 @@
+{
+  "baselineId": "p4-04-books-batch1-frozen-e2e-2026-07-27",
+  "recordedAt": "2026-07-27",
+  "aggregate": {
+    "discovered": 46,
+    "passed": 28,
+    "failed": 11,
+    "skipped": 7
+  },
+  "classificationRule": {
+    "confirmed-earlier-baseline": "The same test failure has direct pre-Batch evidence under artifacts/p4-03-preflight.",
+    "current-baseline-without-historical-proof": "The failure was measured before Batch 2, but the copied non-Git workspace has no earlier execution record proving that exact test already failed."
+  },
+  "failures": [
+    {
+      "id": "media-secondary-projected-exposure",
+      "testFile": "tests/e2e/browser-integration.spec.ts",
+      "title": "Browser Integration Validation › keeps the Media secondary card within its hard projected-exposure acceptance range",
+      "viewport": "desktop 1440x900",
+      "expected": {
+        "exposureRatio": "0.18–0.24",
+        "focalPointX": "<= secondaryExposedAssetFraction"
+      },
+      "actual": {
+        "exposureRatio": 0.170247,
+        "focalPointX": 0.28,
+        "secondaryExposedAssetFraction": 0.2466555550194082
+      },
+      "category": "confirmed-earlier-baseline",
+      "keySnapshotOrMetric": "The projected secondary exposes about 17.0% and its x=0.28 focal point remains outside the exposed asset fraction.",
+      "earlierEvidence": true,
+      "evidencePath": [
+        "artifacts/p4-04-books-batch1/full-e2e.log",
+        "artifacts/p4-03-preflight/media-e2e-baseline-5-runs.json",
+        "artifacts/p4-03-preflight/media-baseline-playwright/"
+      ]
+    },
+    {
+      "id": "media-hold-composition-area",
+      "testFile": "tests/e2e/browser-integration.spec.ts",
+      "title": "Browser Integration Validation › keeps the Media hold composition legible in its own reading stage",
+      "viewport": "desktop 1440x900",
+      "expected": {
+        "mainAreaPx": "71200–74200"
+      },
+      "actual": {
+        "mainAreaPx": 79897.49867738078
+      },
+      "category": "current-baseline-without-historical-proof",
+      "keySnapshotOrMetric": "Desktop Media main projected area exceeds the frozen maximum by 5697.49867738078 px².",
+      "earlierEvidence": false,
+      "evidencePath": [
+        "artifacts/p4-04-books-batch1/full-e2e-without-known-media-baseline.log"
+      ]
+    },
+    {
+      "id": "reduced-motion-scene-switch-dominance",
+      "testFile": "tests/e2e/browser-integration.spec.ts",
+      "title": "Browser Integration Validation › Reduced motion runtime behavior › keeps reduced-motion scene switches stable without camera travel",
+      "viewport": "Desktop Chrome default viewport",
+      "expected": {
+        "dominantSceneId": "media-scene"
+      },
+      "actual": {
+        "dominantSceneId": "hero-scene"
+      },
+      "category": "current-baseline-without-historical-proof",
+      "keySnapshotOrMetric": "At requested Media lifecycle progress 0.72, reduced-motion dominance remains on Hero.",
+      "earlierEvidence": false,
+      "evidencePath": [
+        "artifacts/p4-04-books-batch1/full-e2e-without-media-baselines.log"
+      ]
+    },
+    {
+      "id": "mobile-reduced-motion-visual-vacuum",
+      "testFile": "tests/e2e/browser-integration.spec.ts",
+      "title": "Browser Integration Validation › Reduced motion runtime behavior › keeps mobile reduced-motion chapter handoff free of a visual vacuum",
+      "viewport": "mobile 390x844",
+      "expected": {
+        "longestVacuumDurationMs": "<= 16.7"
+      },
+      "actual": {
+        "direction": "forward",
+        "longestRunFrames": 15,
+        "longestVacuumDurationMs": 249.89999999999964
+      },
+      "category": "current-baseline-without-historical-proof",
+      "keySnapshotOrMetric": "Forward handoff contains a 15-frame visual vacuum.",
+      "earlierEvidence": false,
+      "evidencePath": [
+        "artifacts/p4-04-books-batch1/full-e2e-serial-tail.log"
+      ]
+    },
+    {
+      "id": "desktop-reduced-motion-visual-vacuum",
+      "testFile": "tests/e2e/browser-integration.spec.ts",
+      "title": "Browser Integration Validation › Reduced motion runtime behavior › keeps desktop reduced-motion chapter handoff free of a visual vacuum",
+      "viewport": "desktop 1440x900",
+      "expected": {
+        "longestVacuumDurationMs": "<= 16.7"
+      },
+      "actual": {
+        "direction": "forward",
+        "longestRunFrames": 10,
+        "longestVacuumDurationMs": 616.6000000000004
+      },
+      "category": "current-baseline-without-historical-proof",
+      "keySnapshotOrMetric": "Forward handoff contains a 10-frame visual vacuum.",
+      "earlierEvidence": false,
+      "evidencePath": [
+        "artifacts/p4-04-books-batch1/full-e2e-serial-tail-individual-remaining.log"
+      ]
+    },
+    {
+      "id": "mobile-normal-forward-reverse-visual-vacuum",
+      "testFile": "tests/e2e/browser-integration.spec.ts",
+      "title": "Browser Integration Validation › keeps mobile forward and reverse chapter handoffs free of a visual vacuum",
+      "viewport": "mobile 390x844",
+      "expected": {
+        "longestVacuumDurationMs": "<= 16.7"
+      },
+      "actual": {
+        "direction": "forward",
+        "longestRunFrames": 15,
+        "longestVacuumDurationMs": 250
+      },
+      "category": "current-baseline-without-historical-proof",
+      "keySnapshotOrMetric": "Forward handoff contains a 15-frame visual vacuum.",
+      "earlierEvidence": false,
+      "evidencePath": [
+        "artifacts/p4-04-books-batch1/full-e2e-serial-tail-individual-remaining.log"
+      ]
+    },
+    {
+      "id": "desktop-normal-forward-reverse-visual-vacuum",
+      "testFile": "tests/e2e/browser-integration.spec.ts",
+      "title": "Browser Integration Validation › keeps desktop forward and reverse chapter handoffs free of a visual vacuum",
+      "viewport": "desktop 1440x900",
+      "expected": {
+        "longestVacuumDurationMs": "<= 16.7"
+      },
+      "actual": {
+        "direction": "forward",
+        "longestVacuumDurationMs": 549.8999999999996
+      },
+      "category": "confirmed-earlier-baseline",
+      "keySnapshotOrMetric": "The current forward handoff vacuum is 549.9 ms; direct pre-Batch evidence records the same test failing at 66.7 ms.",
+      "earlierEvidence": true,
+      "evidencePath": [
+        "artifacts/p4-04-books-batch1/full-e2e-serial-tail-individual-remaining.log",
+        "artifacts/p4-03-preflight/full-e2e-playwright/browser-integration-Browse-158c8-ffs-free-of-a-visual-vacuum-preflight-isolated/error-context.md"
+      ]
+    },
+    {
+      "id": "fast-jump-one-frame-coherence",
+      "testFile": "tests/e2e/browser-integration.spec.ts",
+      "title": "Browser Integration Validation › keeps fast forward and reverse jumps visually coherent within one frame of convergence",
+      "viewport": "desktop 1440x900",
+      "expected": {
+        "heroOrMediaRecognizableAfterFrameOne": true
+      },
+      "actual": {
+        "direction": "forward",
+        "frame": 1,
+        "heroOrMediaRecognizable": false,
+        "transitionPhase": "cache",
+        "handoffProgress": 0.7399488304093568,
+        "dominantSceneId": null
+      },
+      "category": "current-baseline-without-historical-proof",
+      "keySnapshotOrMetric": "Frame 1 after a fast forward jump has neither a recognizable Hero nor Media layer.",
+      "earlierEvidence": false,
+      "evidencePath": [
+        "artifacts/p4-04-books-batch1/full-e2e-serial-tail-individual-remaining.log"
+      ]
+    },
+    {
+      "id": "media-fallback-active-ready",
+      "testFile": "tests/e2e/browser-integration.spec.ts",
+      "title": "Browser Integration Validation › validates media fallback visibility contract",
+      "viewport": "desktop 1440x900",
+      "expected": {
+        "allFallbackImageOpacitiesAfterMediaProgress072": "0 within 5000 ms"
+      },
+      "actual": {
+        "pollResult": false,
+        "timeoutMs": 5000
+      },
+      "category": "current-baseline-without-historical-proof",
+      "keySnapshotOrMetric": "The active-ready Media fallback images do not all reach opacity 0 before timeout.",
+      "earlierEvidence": false,
+      "evidencePath": [
+        "artifacts/p4-04-books-batch1/full-e2e-serial-tail-individual-remaining.log"
+      ]
+    },
+    {
+      "id": "media-fallback-after-delayed-texture-load",
+      "testFile": "tests/e2e/browser-integration.spec.ts",
+      "title": "Browser Integration Validation › keeps fallback visible while media textures are loading",
+      "viewport": "mobile 390x844",
+      "expected": {
+        "allFallbackImageOpacitiesAfterLoadAndMediaProgress072": "0 within 5000 ms"
+      },
+      "actual": {
+        "pollResult": false,
+        "timeoutMs": 5000
+      },
+      "category": "current-baseline-without-historical-proof",
+      "keySnapshotOrMetric": "After delayed Media texture requests are released, the fallback images do not all reach opacity 0 before timeout.",
+      "earlierEvidence": false,
+      "evidencePath": [
+        "artifacts/p4-04-books-batch1/full-e2e-serial-tail-individual-remaining.log"
+      ]
+    },
+    {
+      "id": "media-fallback-context-loss-precondition",
+      "testFile": "tests/e2e/browser-integration.spec.ts",
+      "title": "Browser Integration Validation › restores fallback visibility after WebGL context lost",
+      "viewport": "desktop 1440x900",
+      "expected": {
+        "allFallbackImageOpacitiesBeforeContextLoss": "0 within 5000 ms"
+      },
+      "actual": {
+        "pollResult": false,
+        "timeoutMs": 5000,
+        "contextLossStepReached": false
+      },
+      "category": "current-baseline-without-historical-proof",
+      "keySnapshotOrMetric": "The test times out on the active-ready hidden-fallback precondition before it can trigger context loss.",
+      "earlierEvidence": false,
+      "evidencePath": [
+        "artifacts/p4-04-books-batch1/full-e2e-serial-tail-individual-remaining.log"
+      ]
+    }
+  ],
+  "differentialGate": {
+    "allowedFailureIds": [
+      "media-secondary-projected-exposure",
+      "media-hold-composition-area",
+      "reduced-motion-scene-switch-dominance",
+      "mobile-reduced-motion-visual-vacuum",
+      "desktop-reduced-motion-visual-vacuum",
+      "mobile-normal-forward-reverse-visual-vacuum",
+      "desktop-normal-forward-reverse-visual-vacuum",
+      "fast-jump-one-frame-coherence",
+      "media-fallback-active-ready",
+      "media-fallback-after-delayed-texture-load",
+      "media-fallback-context-loss-precondition"
+    ],
+    "rules": [
+      "The post-Batch failure set must be a subset of the accepted 11 IDs.",
+      "No Books, About, Hero, Media, runtime, content, or other test outside the accepted set may fail.",
+      "Frozen core metrics must not materially worsen.",
+      "No test may be skipped, filtered out of the final aggregate, or weakened; no assertion or Hero/Media parameter may be changed to satisfy the gate."
+    ]
+  }
+}
