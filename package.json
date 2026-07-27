@@ -14,7 +14,8 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "test:e2e:rc": "node scripts/run-rc-e2e-baseline.mjs"
   },
   "dependencies": {
     "@react-three/fiber": "^9.6.1",

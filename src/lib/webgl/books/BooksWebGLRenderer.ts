@@ -239,7 +239,12 @@ export default class BooksWebGLRenderer {
 
   get isVisualReady(): boolean {
     const snapshot = this.compositionSnapshot;
-    return snapshot.allTexturesReady && snapshot.allCoversRendered;
+    return (
+      snapshot.allTexturesReady &&
+      snapshot.meshCount === 3 &&
+      snapshot.geometryCount === 1 &&
+      snapshot.materialCount === 3
+    );
   }
 
   get resourceSnapshot(): GPUResourceSnapshot {

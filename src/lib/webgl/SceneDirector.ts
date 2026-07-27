@@ -8,6 +8,7 @@ import type DOMTracker from "@/lib/webgl/DOMTracker";
 import RenderScheduler from "@/lib/webgl/RenderScheduler";
 import { CHAPTER_PROGRESS_CONFIG } from "@/lib/webgl/hero/heroSceneConfig";
 import { MEDIA_PROGRESS_CONFIG } from "@/lib/webgl/media/MediaSceneProgress";
+import { shouldExposeRuntimeDiagnostics } from "@/lib/runtime/diagnostics";
 
 export type SceneActivationStrategy = "replace" | "overlap";
 
@@ -38,7 +39,12 @@ export type SceneDirectorInput = {
   readonly sceneTransitionPolicy?: SceneTransitionPolicy;
   readonly domTracker?: Pick<DOMTracker, "getSnapshot">;
   readonly manifestoAboutPolicy?: ManifestoAboutPolicy;
+  readonly quoteBooksPolicy?: QuoteBooksPolicy;
   readonly mediaVisualReadyResolver?: (
+    scene: SceneModule<unknown>,
+    registryState: SceneLifecycleState | null,
+  ) => boolean;
+  readonly booksVisualReadyResolver?: (
     scene: SceneModule<unknown>,
     registryState: SceneLifecycleState | null,
   ) => boolean;
@@ -77,6 +83,16 @@ export type ManifestoAboutPolicy = {
   readonly cacheAfterBottom: number;
 };
 
+export type QuoteBooksPolicy = {
+  readonly quoteAnchorId: string;
+  readonly booksAnchorId: string;
+  readonly preloadViewportDistance: number;
+  readonly activationCoreTop: number;
+  readonly activationCoreBottom: number;
+  readonly cacheBeforeTop: number;
+  readonly cacheAfterBottom: number;
+};
+
 const CAMERA_HANDOFF_EASING: Record<string, CameraHandoffEasing> = {
   linear: (value: number) => value,
   easeOutCubic: (value: number) => 1 - Math.pow(1 - value, 3),
@@ -102,6 +118,16 @@ export const DEFAULT_SCENE_TRANSITION_POLICY: SceneTransitionPolicy = {
 export const DEFAULT_MANIFESTO_ABOUT_POLICY: ManifestoAboutPolicy = {
   manifestoAnchorId: "manifesto",
   aboutAnchorId: "about",
+  preloadViewportDistance: 1.5,
+  activationCoreTop: 0.2,
+  activationCoreBottom: 0.8,
+  cacheBeforeTop: 0.8,
+  cacheAfterBottom: 0.2,
+};
+
+export const DEFAULT_QUOTE_BOOKS_POLICY: QuoteBooksPolicy = {
+  quoteAnchorId: "quote",
+  booksAnchorId: "books",
   preloadViewportDistance: 1.5,
   activationCoreTop: 0.2,
   activationCoreBottom: 0.8,
@@ -211,7 +237,12 @@ export default class SceneDirector {
   private readonly transitionPolicy: SceneTransitionPolicy;
   private readonly domTracker?: Pick<DOMTracker, "getSnapshot">;
   private readonly manifestoAboutPolicy: ManifestoAboutPolicy;
+  private readonly quoteBooksPolicy: QuoteBooksPolicy;
   private readonly resolveMediaVisualReady: (
+    scene: SceneModule<unknown>,
+    registryState: SceneLifecycleState | null,
+  ) => boolean;
+  private readonly resolveBooksVisualReady: (
     scene: SceneModule<unknown>,
     registryState: SceneLifecycleState | null,
   ) => boolean;
@@ -221,6 +252,11 @@ export default class SceneDirector {
   private readonly aboutTransitionState = {
     preloadInFlight: false,
     isManifestoInterlude: false,
+  };
+  private readonly booksTransitionState = {
+    preloadInFlight: false,
+    activationRequested: false,
+    isDomOnlyInterval: false,
   };
   private readonly scenes = new Map<string, SceneModule<unknown>>();
   private readonly unsubscribe: Unsubscribe;
@@ -240,7 +276,9 @@ export default class SceneDirector {
     sceneTransitionPolicy,
     domTracker,
     manifestoAboutPolicy,
+    quoteBooksPolicy,
     mediaVisualReadyResolver,
+    booksVisualReadyResolver,
     updatePriority = DEFAULT_UPDATE_PRIORITY,
   }: SceneDirectorInput) {
     this.registry = registry;
@@ -251,12 +289,21 @@ export default class SceneDirector {
     this.domTracker = domTracker;
     this.manifestoAboutPolicy =
       manifestoAboutPolicy ?? DEFAULT_MANIFESTO_ABOUT_POLICY;
+    this.quoteBooksPolicy =
+      quoteBooksPolicy ?? DEFAULT_QUOTE_BOOKS_POLICY;
     this.resolveMediaVisualReady = (scene, registryState) => {
       if (mediaVisualReadyResolver) {
         return Boolean(mediaVisualReadyResolver(scene, registryState));
       }
 
       return this.isMediaVisualReadyFallback(scene, false);
+    };
+    this.resolveBooksVisualReady = (scene, registryState) => {
+      if (booksVisualReadyResolver) {
+        return Boolean(booksVisualReadyResolver(scene, registryState));
+      }
+
+      return this.isBooksVisualReadyFallback(scene, false);
     };
 
     this.unsubscribe = scheduler.register((payload: MotionFramePayload): void => {
@@ -278,6 +325,7 @@ export default class SceneDirector {
 
       this.advanceHeroToMediaTransition(payload);
       this.advanceManifestoAboutTransition(payload);
+      this.advanceQuoteBooksTransition(payload);
       this.syncMediaVisualReady();
       this.currentCameraIntent = this.resolveCameraIntent();
       this.currentTransitionSnapshot = this.resolveTransitionSnapshot();
@@ -384,7 +432,7 @@ export default class SceneDirector {
   }
 
   private syncMediaVisualReady(): void {
-    for (const [id, scene] of this.scenes.entries()) {
+    for (const scene of this.scenes.values()) {
       if (scene.identity.sceneType !== "media") {
         continue;
       }
@@ -663,11 +711,55 @@ export default class SceneDirector {
   }
 
   private resolveCameraIntent(): SceneCameraIntent | null {
-    if (this.aboutTransitionState.isManifestoInterlude) {
+    const candidates = this.getCameraIntentCandidates();
+    const dominantBooks = candidates.find(
+      (entry) =>
+        entry.isDominant &&
+        entry.scene.identity.sceneType === "books",
+    );
+    if (dominantBooks) {
+      return {
+        sceneId: dominantBooks.sceneId,
+        intent: {
+          target: { ...dominantBooks.intent.target },
+          positionOffset: { ...dominantBooks.intent.positionOffset },
+          fovIntent: dominantBooks.intent.fovIntent,
+          depthBias: dominantBooks.intent.depthBias,
+          weight: dominantBooks.intent.weight,
+        },
+      };
+    }
+
+    const dominantAbout = candidates.find(
+      (entry) =>
+        entry.isDominant &&
+        entry.scene.identity.sceneType === "about",
+    );
+    if (
+      dominantAbout &&
+      !this.aboutTransitionState.isManifestoInterlude
+    ) {
+      return {
+        sceneId: dominantAbout.sceneId,
+        intent: {
+          target: { ...dominantAbout.intent.target },
+          positionOffset: {
+            ...dominantAbout.intent.positionOffset,
+          },
+          fovIntent: dominantAbout.intent.fovIntent,
+          depthBias: dominantAbout.intent.depthBias,
+          weight: dominantAbout.intent.weight,
+        },
+      };
+    }
+
+    if (
+      this.aboutTransitionState.isManifestoInterlude ||
+      this.booksTransitionState.isDomOnlyInterval
+    ) {
       return cloneSceneCameraIntent(GLOBAL_IDLE_CAMERA_INTENT);
     }
 
-    const candidates = this.getCameraIntentCandidates();
     if (candidates.length === 0) {
       return null;
     }
@@ -1038,6 +1130,116 @@ export default class SceneDirector {
     }
   }
 
+  private advanceQuoteBooksTransition(payload: MotionFramePayload): void {
+    const books = this.getBooksScene();
+    const tracker = this.domTracker;
+    if (!books || !tracker) {
+      this.booksTransitionState.isDomOnlyInterval = false;
+      return;
+    }
+
+    const policy = this.quoteBooksPolicy;
+    const booksAnchor = tracker.getSnapshot(
+      books.scene.identity.anchorId ?? policy.booksAnchorId,
+    );
+    if (!booksAnchor) {
+      this.booksTransitionState.isDomOnlyInterval = false;
+      return;
+    }
+
+    const viewportHeight = Math.max(1, booksAnchor.viewport.height);
+    const booksTop = booksAnchor.worldTop.screen.y;
+    const booksBottom = booksAnchor.worldBottom.screen.y;
+    const coreTop = policy.activationCoreTop * viewportHeight;
+    const coreBottom = policy.activationCoreBottom * viewportHeight;
+    const isBooksCoreActive =
+      booksTop <= coreBottom && booksBottom >= coreTop;
+    const isBeforeBooksCore =
+      booksTop > policy.cacheBeforeTop * viewportHeight;
+    const isAfterBooksCore =
+      booksBottom < policy.cacheAfterBottom * viewportHeight;
+    const shouldPreload =
+      booksTop <= viewportHeight * policy.preloadViewportDistance &&
+      booksBottom >= policy.cacheAfterBottom * viewportHeight;
+    const quoteAnchor = tracker.getSnapshot(policy.quoteAnchorId);
+    const quoteHasEntered =
+      Boolean(quoteAnchor) &&
+      quoteAnchor!.worldTop.screen.y <= viewportHeight;
+
+    let currentBooks = books;
+    this.booksTransitionState.isDomOnlyInterval =
+      !currentBooks.state.dominant &&
+      (quoteHasEntered || shouldPreload || isBooksCoreActive);
+
+    if (
+      shouldPreload &&
+      !currentBooks.state.resident &&
+      !this.booksTransitionState.preloadInFlight
+    ) {
+      this.booksTransitionState.preloadInFlight = true;
+      void this.preload(currentBooks.id).finally(() => {
+        this.booksTransitionState.preloadInFlight = false;
+      });
+      if (isBooksCoreActive) {
+        this.booksTransitionState.activationRequested = true;
+      }
+      return;
+    }
+
+    if (isBooksCoreActive) {
+      this.booksTransitionState.activationRequested = true;
+      currentBooks = this.getBooksScene() ?? currentBooks;
+      if (
+        !currentBooks.state.resident ||
+        !this.isBooksVisualReady(
+          currentBooks.scene,
+          currentBooks.state,
+          false,
+        )
+      ) {
+        this.booksTransitionState.isDomOnlyInterval = true;
+        return;
+      }
+
+      if (!currentBooks.state.dominant) {
+        const wasActive = isActiveState(currentBooks.state);
+        if (!this.activate(currentBooks.id, "replace")) {
+          return;
+        }
+        if (!wasActive) {
+          this.updateSceneForCurrentFrame(
+            currentBooks.id,
+            payload,
+            "activated",
+          );
+        }
+      }
+      this.booksTransitionState.isDomOnlyInterval = false;
+      return;
+    }
+
+    const shouldCache =
+      (isBeforeBooksCore || isAfterBooksCore) &&
+      (
+        this.booksTransitionState.activationRequested ||
+        isActiveState(currentBooks.state)
+      );
+    if (
+      shouldCache &&
+      currentBooks.state.resident &&
+      !currentBooks.state.cached
+    ) {
+      if (!this.cache(currentBooks.id)) {
+        return;
+      }
+    }
+    if (shouldCache) {
+      this.booksTransitionState.activationRequested = false;
+      this.booksTransitionState.isDomOnlyInterval =
+        quoteHasEntered || isBeforeBooksCore;
+    }
+  }
+
   private advanceHeroToMediaTransition(payload: MotionFramePayload): void {
     const policy = this.transitionPolicy;
     for (let step = 0; step < 8; step += 1) {
@@ -1257,6 +1459,26 @@ export default class SceneDirector {
     return null;
   }
 
+  private getBooksScene():
+  | {
+    readonly id: string;
+    readonly scene: SceneModule<unknown>;
+    readonly state: SceneLifecycleState;
+  }
+  | null {
+    for (const [id, scene] of this.scenes) {
+      if (scene.identity.sceneType === "books") {
+        const state = this.getState(id);
+        if (!state) {
+          return null;
+        }
+        return { id, scene, state };
+      }
+    }
+
+    return null;
+  }
+
   private isAboutVisualReady(scene: SceneModule<unknown>): boolean {
     const sceneSnapshot = scene.getSnapshot();
     if (!sceneSnapshot || typeof sceneSnapshot !== "object") {
@@ -1327,6 +1549,43 @@ export default class SceneDirector {
 
     return Boolean(candidate.visualReady);
   }
+
+  private isBooksVisualReady(
+    scene: SceneModule<unknown>,
+    registryState: SceneLifecycleState | null,
+    defaultReady: boolean,
+  ): boolean {
+    if (
+      !registryState ||
+      registryState.disposed ||
+      !registryState.resident
+    ) {
+      return false;
+    }
+
+    try {
+      return this.resolveBooksVisualReady(scene, registryState);
+    } catch {
+      return defaultReady;
+    }
+  }
+
+  private isBooksVisualReadyFallback(
+    scene: SceneModule<unknown>,
+    defaultReady: boolean,
+  ): boolean {
+    const snapshot = scene.getSnapshot();
+    if (!snapshot || typeof snapshot !== "object") {
+      return defaultReady;
+    }
+
+    const candidate = snapshot as { readonly visualReady?: unknown };
+    if (candidate.visualReady === undefined) {
+      return defaultReady;
+    }
+
+    return Boolean(candidate.visualReady);
+  }
 }
 
 function isActiveState(state: SceneLifecycleState | null): boolean {
@@ -1368,10 +1627,9 @@ function resolveCameraBlend({
   let handoffProgress = 0;
   let handoffBlendWeight = 1;
 
-  if (typeof window !== "undefined") {
+  if (typeof window !== "undefined" && shouldExposeRuntimeDiagnostics()) {
     const runtimeDebug = (window as { __r3bBlendDebug?: unknown }).__r3bBlendDebug;
     if (runtimeDebug) {
-      // eslint-disable-next-line no-console
       console.log("R3B_CAMERA_BLEND", {
         isHeroToMedia,
         isMediaToHero,

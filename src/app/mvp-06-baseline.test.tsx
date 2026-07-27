@@ -11,14 +11,14 @@ import HomePage from "./page";
 import SiteChrome from "@/components/layout/SiteChrome";
 
 describe("MVP-06 SEO baseline", () => {
-  it("exports production metadata with Open Graph and Twitter cards", () => {
+  it("exports development-safe metadata with Open Graph and Twitter cards", () => {
     expect(metadata.title).toMatchObject({
-      default: "Trevor Noah Style Website",
-      template: "Trevor Noah Style Website | %s",
+      default: "DEV-HOST-01 | Editorial Archive",
+      template: "DEV-HOST-01 | Editorial Archive | %s",
     });
-    expect(metadata.description).toContain("SEO-oriented");
+    expect(metadata.description).toContain("fictional development editorial archive");
     expect(metadata.openGraph).toBeDefined();
-    expect(metadata.openGraph?.title).toBe("Trevor Noah Style Website");
+    expect(metadata.openGraph?.title).toBe("DEV-HOST-01 | Editorial Archive");
     const openGraphImages = Array.isArray(metadata.openGraph?.images)
       ? metadata.openGraph.images
       : metadata.openGraph?.images
@@ -27,14 +27,13 @@ describe("MVP-06 SEO baseline", () => {
     expect(openGraphImages).toHaveLength(1);
     expect(openGraphImages[0]).toMatchObject({
       url: "/assets/placeholders/og-image.svg",
-      alt: "Trevor Noah Style hero image",
+      alt: "DEV-HOST-01 development archive hero image",
     });
     expect(metadata.twitter).toMatchObject({
       card: "summary_large_image",
-      title: "Trevor Noah Style Website",
-      site: "@example",
+      title: "DEV-HOST-01 | Editorial Archive",
     });
-    expect(metadata.robots).toMatchObject({ index: true, follow: true });
+    expect(metadata.robots).toMatchObject({ index: false, follow: false });
   });
 
   it("serves robots directive and sitemap route references", () => {
@@ -49,19 +48,16 @@ describe("MVP-06 SEO baseline", () => {
     expect(rules).toHaveLength(1);
     expect(rules[0]).toMatchObject({
       userAgent: "*",
-      allow: "/",
+      disallow: "/",
     });
-    expect(robotsManifest.sitemap).toBe("https://www.trevornoah.com/sitemap.xml");
+    expect(robotsManifest.sitemap).toBe("https://dev-host-01.example/sitemap.xml");
   });
 
   it("generates sitemap entries for baseline pages", () => {
     const items = getSitemap();
     const urls = items.map((item) => new URL(item.url).pathname);
 
-    expect(urls).toHaveLength(4);
-    expect(urls).toEqual(
-      expect.arrayContaining(["/", "/privacy", "/terms", "/contact"]),
-    );
+    expect(urls).toEqual(["/"]);
   });
 });
 
@@ -69,7 +65,7 @@ describe("MVP-06 accessibility baseline", () => {
   it("supports skip link to #site-content and stable main id", () => {
     render(
       <SiteChrome
-        brandName="Trevor Noah Style"
+        brandName="DEV-HOST-01"
         navItems={[{ id: "hero", label: "Hero", href: "#hero" }]}
       >
         <HomePage />
@@ -84,6 +80,7 @@ describe("MVP-06 accessibility baseline", () => {
     expect(main?.tagName.toLowerCase()).toBe("main");
 
     expect(screen.getByRole("main")).toHaveAttribute("id", "site-content");
+    expect(screen.getByRole("main")).toHaveAttribute("tabindex", "-1");
   });
 });
 

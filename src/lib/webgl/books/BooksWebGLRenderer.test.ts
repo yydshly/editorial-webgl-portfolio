@@ -207,7 +207,7 @@ describe("BooksWebGLRenderer", () => {
     expect(harness.renderer.info.render.calls).toBe(9);
   });
 
-  it("primes three texture leases while inactive without submitting the Books scene", () => {
+  it("reports activation readiness after inactive priming without claiming that covers rendered", () => {
     const state = createState(1440, { active: false });
     const harness = createHarness(1440, 900, state);
 
@@ -225,10 +225,10 @@ describe("BooksWebGLRenderer", () => {
     expect(harness.booksRenderer.compositionSnapshot.allCoversRendered).toBe(
       false,
     );
-    expect(harness.booksRenderer.isVisualReady).toBe(false);
+    expect(harness.booksRenderer.isVisualReady).toBe(true);
   });
 
-  it("does not report visual-ready when submitted covers have zero projected area", () => {
+  it("keeps activation readiness separate from zero-area composition readiness", () => {
     const state = createState(1440);
     Object.assign(state, {
       anchorWidth: 0,
@@ -244,7 +244,7 @@ describe("BooksWebGLRenderer", () => {
     expect(harness.booksRenderer.compositionSnapshot.allCoversRendered).toBe(
       false,
     );
-    expect(harness.booksRenderer.isVisualReady).toBe(false);
+    expect(harness.booksRenderer.isVisualReady).toBe(true);
   });
 
   it("maps each material to its own cover texture and uploads stable textures only once", () => {

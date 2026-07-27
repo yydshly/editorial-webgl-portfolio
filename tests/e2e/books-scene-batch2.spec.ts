@@ -230,8 +230,8 @@ async function waitForBooksRuntime(page: Page): Promise<void> {
     await page.waitForFunction(
       () => {
         const probe = (window as unknown as {
-          __trevorNoahWebGLProbe?: { snapshot: () => BooksProbeSnapshot };
-        }).__trevorNoahWebGLProbe;
+          __editorialWebGLProbe?: { snapshot: () => BooksProbeSnapshot };
+        }).__editorialWebGLProbe;
         const snapshot = probe?.snapshot();
         const scene = snapshot?.diagnostics.sceneSnapshots["books-scene"];
         const composition = snapshot?.composition?.books;
@@ -251,8 +251,8 @@ async function waitForBooksRuntime(page: Page): Promise<void> {
   } catch {
     const snapshot = await page.evaluate(() => {
       const probe = (window as unknown as {
-        __trevorNoahWebGLProbe?: { snapshot: () => BooksProbeSnapshot };
-      }).__trevorNoahWebGLProbe;
+        __editorialWebGLProbe?: { snapshot: () => BooksProbeSnapshot };
+      }).__editorialWebGLProbe;
       return probe?.snapshot() ?? null;
     });
     throw new Error(
@@ -264,8 +264,8 @@ async function waitForBooksRuntime(page: Page): Promise<void> {
 async function readEvidence(page: Page) {
   return page.evaluate(() => {
     const probe = (window as unknown as {
-      __trevorNoahWebGLProbe?: { snapshot: () => BooksProbeSnapshot };
-    }).__trevorNoahWebGLProbe;
+      __editorialWebGLProbe?: { snapshot: () => BooksProbeSnapshot };
+    }).__editorialWebGLProbe;
     const snapshot = probe?.snapshot();
     const books = document.getElementById("books");
     const stage = document.getElementById("books-cover-stage");

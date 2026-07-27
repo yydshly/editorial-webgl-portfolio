@@ -1,13 +1,20 @@
 # Project Handoff
 
-## Current phase: P4-04 Books Scene design and implementation planning
+## Current phase: Release Candidate / Phase 4 Closure
 
-P4-03 About Scene is closed. P4-04 Books product design is approved, and its design specification and implementation plan are now the next-phase authority. No P4-04 business code, tests, CSS, runtime, renderer, or assets have been implemented in the P4-04-00 documentation task.
+P4-03 About Scene and P4-04 Books Scene are closed. P4-04 Batches 1-4 are
+implemented and verified, and the final Desktop and Mobile browser evidence
+has received explicit human visual sign-off. Chapter development is complete;
+the project is now in site-wide Release Candidate / Phase 4 Closure. RC-00
+Baseline & Debt Triage is complete; RC-01 Hero / Media E2E debt repair is the
+next implementation gate.
 
 Authority:
 
 - Design: `docs/superpowers/specs/2026-07-27-p4-04-books-scene-design.md`
 - Plan: `docs/superpowers/plans/2026-07-27-p4-04-books-scene-implementation-plan.md`
+- RC authority: `docs/superpowers/specs/2026-07-27-release-candidate-phase4-closure.md`
+- RC plan: `docs/superpowers/plans/2026-07-27-release-candidate-phase4-closure-plan.md`
 - Architecture decisions: `docs/architecture/architecture-decisions.md`
 - Scene contract: `docs/architecture/scene-system.md`
 - Rendering contract: `docs/architecture/rendering-contract.md`
@@ -23,6 +30,13 @@ Authority:
 - P4-02: Media Composition Tuning complete and closed.
 - P4-03: About Scene complete and closed.
 - P4-04-00: Books Scene product design and implementation plan complete.
+- P4-04 Batch 1: content, DOM, assets, manifest, progress, and motion complete.
+- P4-04 Batch 2: Books Scene, renderer, CPU/GPU ownership, and base Desktop/Mobile composition complete.
+- P4-04 Batch 3: CameraIntent, formal orchestration, grouped fallback, context restore, evidence, and frozen differential complete.
+- P4-04 Batch 4: Desktop/Mobile composition tuning, final evidence, and human visual sign-off complete.
+- P4-04 Books Scene: closed.
+- RC-00: complete; 11 frozen Hero/Media failures adjudicated as two Category A
+  product blockers and nine Category B test-semantics repairs.
 
 ## P4-03 About Scene closure
 
@@ -118,7 +132,222 @@ About exits and caches
 
 There is no About-to-Books overlap, blend, or direct camera handoff across News/Quote. DOM fallback remains visible while Books assets or GPU resources are not fully ready.
 
-## Next implementation entry
+## Next phase entry
+
+The next phase is:
+
+```text
+Release Candidate / Phase 4 Closure
+```
+
+It is not a P4-05 Scene and must not introduce another spatial chapter.
+RC-00 is complete. The RC-01 entry scope is:
+
+1. fix the two confirmed Media composition product defects;
+2. rewrite the nine outdated tests against composed DOM/WebGL product
+   semantics without weakening visual-continuity or fallback gates;
+3. decide whether to clean the proven-safe preload-only cold-resident state;
+4. finish with a zero-omission full E2E run.
+
+## P4-04 Batch 3 verified result
+
+`BooksScene` emits its stable intent only while active, anchored,
+resource-ready, and not cached/disposed. `SceneDirector` formally resolves:
+
+```text
+About dominant/cache
+  -> News / Quote DOM-only global-idle
+  -> Books preload
+  -> activation request
+  -> all-cover resource gate
+  -> Books dominant
+  -> forward/reverse cache and global-idle
+  -> cached re-entry
+```
+
+The old Batch 2 `ExperienceRoot` lifecycle bridge is removed. The five-state
+fallback is atomic across all three DOM covers, and context restore returns to
+exactly three CPU owners and seven GPU leases (`3 / 1 / 3`) before fallback
+pixels hide.
+
+Desktop and Mobile screenshots cover Quote hold, first active, visual-ready,
+dominant, hold, reverse Quote, fast final, reduced-motion hold, unavailable,
+and restored states. Six recordings cover the full journey, fast scroll, and
+reduced motion on both viewports.
+
+Engineering result:
+
+- lint zero errors;
+- typecheck, unit, and production build pass;
+- Books focused E2E `10/10`;
+- About E2E `12/12`;
+- complete E2E `64 discovered / 52 passed / 11 frozen failed / 1 existing
+  skip`, with no new failure and unchanged failure topology.
+
+The authoritative differential and browser artifacts are in
+`artifacts/p4-04-books-batch3/`.
+
+## P4-04 Books Scene closure
+
+P4-04 Books Scene is closed with explicit final human visual sign-off.
+
+Accepted behavior:
+
+- Desktop and Mobile composition;
+- one-primary/two-supporting cover hierarchy;
+- normal DOM/WebGL compositing;
+- forward, reverse, and fast-scroll convergence;
+- reduced-motion hold behavior;
+- grouped fallback behavior;
+- context lost and restore behavior;
+- verified CPU/GPU ownership and performance budget.
+
+The locked runtime architecture remains unchanged:
+
+- DOM-first content and fallback;
+- one global Canvas;
+- one global `THREE.WebGLRenderer`;
+- one Camera owned by `CameraRig`;
+- one RAF owned by `FrameCoordinator`;
+- Three.js native runtime with no R3F path.
+
+The current development covers contain minor compression detail that does not
+block closure. Replacing them with production covers requires a Books-only art
+review and does not otherwise reopen P4-04.
+
+The following remain independent Release Candidate technical debt and do not
+block P4-04 closure:
+
+- the frozen 11 Hero/Media E2E failures;
+- the preload-only reverse lifecycle Minor.
+
+## RC-00 baseline and debt triage
+
+RC-00 is complete on `feat/release-candidate-phase4` from stable commit
+`9f2f103`.
+
+Engineering baseline:
+
+- lint started at zero errors / five warnings; the five warnings are removed
+  without Runtime behavior changes;
+- typecheck, unit, and production build pass;
+- exhaustive E2E:
+  `76 discovered / 58 passed / 11 failed / 7 skipped / 0 omitted`;
+- an automated isolated-server entry now reruns declarations omitted by serial
+  failure and reports a combined aggregate.
+
+The earlier P4-04 `64 passed / 11 failed / 1 skipped` count treated six opt-in
+evidence declarations as passes. RC-00 corrects them to conditional skips.
+This does not change the 11-failure topology and does not reopen P4-04.
+
+Failure adjudication:
+
+- Category A, release-blocking product defects: two Media Desktop composition
+  failures (secondary exposure/focal and hold area/exposure);
+- Category B, outdated test semantics: nine failures covering internal
+  dominance proxies, WebGL-only vacuum proxies, and fixed-progress fallback
+  prerequisites;
+- Category C: none in the canonical isolated development run;
+- Category D: none among the 11.
+
+The preload-only reverse Minor is a low-risk cold-resident state. Deterministic
+tests prove no duplicate preload/owner growth, no stale CameraIntent, and
+successful reactivation. It is not a current release blocker.
+
+Authority:
+
+- `docs/superpowers/specs/2026-07-27-release-candidate-phase4-closure.md`
+- `docs/superpowers/plans/2026-07-27-release-candidate-phase4-closure-plan.md`
+
+## RC-01 closure and RC-02 entry
+
+RC-01 is closed. The two confirmed Media composition defects were fixed in
+centralized Media motion configuration, and the nine old Hero/Media E2E checks
+now assert the current composed runtime contract. Final isolated E2E is
+`76 discovered / 69 passed / 0 failed / 7 explicit opt-in skips / 0 omitted`.
+
+At Desktop `1440x900`, Main is `74168.36` px² (maximum `74200`), Secondary
+exposure is `0.20777` (contract `0.18-0.24`), and its exposed asset region
+contains focal x `0.28`. The Single Canvas / Renderer / Camera / RAF invariant
+remains intact.
+
+The next phase is **RC-02 Full-site visual, navigation, SEO, and accessibility
+validation**. It must not create a new scene, merge `main`, or deploy.
+
+## RC-02 engineering/audit closure and conditional RC-03 entry
+
+RC-02 resolves the full-site navigation, SEO, accessibility, responsive, and
+browser-evidence work without changing the locked one Canvas / one Renderer /
+one Camera / one RAF Three.js runtime.
+
+- Navigation is anchor-only for live actions; all seven targets exist in DOM
+  order, keyboard activation updates the hash, the mobile menu closes on
+  navigation, and the skip link focuses `main`.
+- The fictional development identity is consistently `DEV-HOST-01`; metadata
+  uses `https://dev-host-01.example`, noindex/nofollow robots, canonical and
+  social metadata, and a declared app icon. No real-person commerce or
+  publication metadata remains.
+- Semantic sections are labelled, Canvas is `aria-hidden`, images have alt
+  text, Books development CTAs are disabled buttons, and DOM content remains
+  complete with WebGL unavailable.
+- The 32-cell `1440 / 1024 / 800 / 390` browser matrix records zero horizontal
+  overflow, legal `global-idle` intervals, grouped fallback, resource owners,
+  and context-loss/restore fallback-first recovery.
+- Mobile Books gains a 2px sticky-header clearance. The Media hard projection
+  gate is sampled after the actual damped camera projection settles; exposure,
+  focal containment, text non-overlap, and overflow requirements are unchanged.
+
+Fresh gates are `lint 0 warnings`, typecheck pass, `303` unit tests pass,
+production build pass, and `83 discovered / 76 passed / 0 failed / 7 opt-in
+skipped / 0 omitted` for the isolated RC E2E runner.
+
+Evidence lives under ignored `artifacts/release-candidate/rc02/`. It includes
+four full-route recordings at their actual target dimensions, per-section
+screenshots, matrix JSON, metadata/accessibility/console audit JSON, and the
+artifact manifest.
+
+RC-02 received explicit temporary release-owner human visual sign-off on
+2026-07-27. Any later visual refinement is deferred and can be reopened as
+needed; it does not reopen RC-02 now. RC-03 is now authorized as the next
+phase: performance budgets, production asset/license manifest, and deployment
+readiness only. RC-03 does not authorize a merge or deployment.
+
+## RC-03 release-readiness start
+
+RC-03 is active on `feat/rc03-release-readiness`. Production build and isolated
+HTTP smoke have passed; asset/licensing, production security policy, debug
+exposure, and remaining production browser smoke gates remain open. Do not
+reopen the signed Scene compositions, merge `main`, or deploy.
+
+## RC-03B production asset, identity, and operations sign-off
+
+RC-03B records the locked fictional public position, the Demo RC/Public
+Production boundary, the complete asset evidence ledger, and the dry-run
+deployment responsibilities. Demo RC is permitted only as a disclosed,
+noindex/nofollow local or controlled preview. Public Production remains
+blocked until formal assets and rights, real domain/host approval, monitoring,
+rollback ownership, production social art, and robots/index approval are
+complete. See `docs/release/` for the authoritative checklist, inventory,
+positioning, and runbook.
+
+Next phase: **RC-04 final regression and release decision preparation**. RC-04
+may verify the locked technical baseline and collect owner approvals; it may
+not modify Hero, Media, About, Books composition, Runtime, Camera,
+SceneDirector, or Renderer, and it may not merge or deploy.
+
+## RC-04 final regression result
+
+RC-04 final regression passed on `feat/rc04-final-regression`: 307 unit tests,
+the no-omission 85-test RC suite (`78 passed / 0 failed / 7 opt-in skipped`),
+and six isolated `next start` production smoke tests. The Demo RC is ready for
+controlled distribution only. Public Production remains blocked by the RC-03B
+asset, identity, domain, and operations gates. The next decision is PR or
+merge preparation; no merge or deployment has occurred.
+
+## Superseded P4-04 Batch 1 entry (historical)
+
+The following Batch 1 instructions are retained only as phase history and are
+not the current implementation entry.
 
 P4-04 Batch 1 starts at Task 1 of the implementation plan:
 
@@ -128,3 +357,10 @@ P4-04 Batch 1 starts at Task 1 of the implementation plan:
 4. continue in strict RED → GREEN → Refactor order.
 
 Do not start `BooksScene`, renderer, CameraIntent, or `SceneDirector` work before Tasks 1–4 have produced DOM content, a validated manifest, real development covers, and pure progress/motion functions.
+## RC-03A technical hardening result
+
+The public asset boundary, legacy brand placeholders, production diagnostics,
+security headers, browser source-map policy, and environment-based site URL are
+hardened. The isolated production browser matrix passed. RC-03B is limited to
+asset provenance/licensing, public identity/domain, and host operational
+readiness; it must not change signed Scene composition.

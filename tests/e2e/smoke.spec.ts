@@ -7,7 +7,7 @@ test("loads the MVP application shell", async ({ page }) => {
   await expect(
     page.getByRole("heading", {
       level: 1,
-      name: "Trevor Noah Style Experience",
+      name: "DEV-HOST-01 Editorial Archive",
     }),
   ).toBeVisible();
 });

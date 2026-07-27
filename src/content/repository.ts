@@ -11,6 +11,7 @@ import type {
   SiteData,
   SiteSection,
 } from "./types";
+import { resolveSiteUrl } from "@/lib/site/siteUrl";
 
 const heroVisual: ImageAsset = {
   id: "hero-visual",
@@ -25,13 +26,13 @@ const heroSection: HeroSection = {
   kind: "hero",
   order: 1,
   tone: "strong",
-  title: "Trevor Noah Style Experience",
-  subtitle: "Editorial storytelling for global audiences",
+  title: "DEV-HOST-01 Editorial Archive",
+  subtitle: "Fictional development studies in editorial storytelling",
   intro:
-    "A premium, narrative-first digital house that balances performance with cultural storytelling.",
+    "A fictional development archive for testing a narrative-first editorial experience and its accessible reading flow.",
   ctas: [
     { label: "Watch latest", href: "#news" },
-    { label: "Tickets", href: "/tickets" },
+    { label: "Explore the archive", href: "#about" },
   ],
   visual: heroVisual,
 };
@@ -169,21 +170,19 @@ const newsSection: NewsSection = {
   tone: "default",
   title: "News",
   subtitle: "Recent updates",
-  ctas: [{ label: "View all news", href: "/news" }],
+  ctas: [{ label: "View publication archive", href: "#books" }],
   posts: [
     {
       date: "2026-07-20",
-      title: "Trevor Noah announces a new international tour stop",
+      title: "A new interview study enters the development archive",
       summary:
-        "The route adds more documentary-style show moments with city-based fan experiences.",
-      href: "/news/international-tour",
+        "The prototype records a new approach to place-led conversations without presenting a real event or person.",
     },
     {
       date: "2026-06-30",
-      title: "Season 2 of media specials enters post-production",
+      title: "Field notes refine the next editorial sequence",
       summary:
-        "A new production cycle focuses on sharper social and personal storytelling.",
-      href: "/news/season-2",
+        "The study tests how reading, imagery, and motion can support a clear, unhurried narrative rhythm.",
     },
   ],
 };
@@ -197,8 +196,8 @@ const quoteSection: QuoteSection = {
   subtitle: "Brand voice sample",
   quote:
     "Humor lands best when it is precise, human, and rooted in lived reality.",
-  author: "Trevor Noah",
-  source: "Audience interview",
+  author: "DEV-HOST-01",
+  source: "Development archive note",
 };
 
 const booksSection: BooksSection = {
@@ -329,18 +328,18 @@ const booksSection: BooksSection = {
 };
 
 const seo: SEOData = {
-  title: "Trevor Noah Style Website",
+  title: "DEV-HOST-01 | Editorial Archive",
   description:
-    "A production-ready, SEO-oriented editorial website for a global personality brand.",
+    "A fictional development editorial archive for testing accessible DOM-first storytelling, navigation, and WebGL fallback.",
   shareImage: "/assets/placeholders/og-image.svg",
 };
 
 const siteContent: SiteData = {
   locale: "en",
   brand: {
-    name: "Trevor Noah Style",
-    domain: "www.trevornoah.com",
-    description: "Editorial style portfolio and media story system.",
+    name: "DEV-HOST-01",
+    domain: resolveSiteUrl().hostname,
+    description: "Fictional development editorial archive and media story system.",
   },
   seo,
   nav: [

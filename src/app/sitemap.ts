@@ -1,32 +1,15 @@
-﻿import type { MetadataRoute } from "next";
+import type { MetadataRoute } from "next";
+import { resolveSiteUrl } from "@/lib/site/siteUrl";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = "https://www.trevornoah.com";
+  const baseUrl = resolveSiteUrl();
 
   return [
     {
-      url: `${baseUrl}/`,
+      url: new URL("/", baseUrl).toString(),
       lastModified: new Date(),
       changeFrequency: "daily",
       priority: 1,
-    },
-    {
-      url: `${baseUrl}/privacy`,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.4,
-    },
-    {
-      url: `${baseUrl}/terms`,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.4,
-    },
-    {
-      url: `${baseUrl}/contact`,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.7,
     },
   ];
 }

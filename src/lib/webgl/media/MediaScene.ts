@@ -95,6 +95,9 @@ export default class MediaScene implements SceneModule<MediaSceneState> {
 
     return {
       ...transform,
+      scale: transform.scale * (layer === "main"
+        ? MEDIA_MOTION_CONFIG.responsiveProjection.mobile.mainScaleMultiplier
+        : 1),
       translateX:
         transform.translateX * (layer === "secondary"
           ? MEDIA_MOTION_CONFIG.responsiveProjection.mobile.secondaryTranslateXMultiplier

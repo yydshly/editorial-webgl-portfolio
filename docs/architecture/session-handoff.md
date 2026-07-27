@@ -2,18 +2,33 @@
 
 ## 1. Current status
 
-- Current phase: P4-04 Books Scene.
-- Current task completed: P4-04 Batch 2 (`BooksScene`, three-cover renderer, and CPU/GPU integration).
+- Current phase: Release Candidate / Phase 4 Closure.
+- RC-02: temporarily approved through explicit release-owner human visual
+  sign-off on 2026-07-27. Deferred visual refinements may be reopened only as
+  needed; they do not reopen RC-02 now.
+- Current entry: RC-03 Performance, production assets, and deployment
+  readiness. RC-03 remains a readiness phase: it does not authorize a merge or
+  deployment.
 - P4-03 About Scene: implemented, verified, human-signed, and closed.
 - P4-04 product direction: approved.
 - P4-04 Batch 1: content/DOM, manifest, development assets, and pure progress/motion implemented.
 - P4-04 Batch 2: implemented and verified against the accepted frozen E2E baseline.
-- Workspace note: this copied directory is not a Git repository, so no commit was created or claimed.
+- P4-04 Batch 3: implemented and verified against the same frozen E2E failure set.
+- P4-04 Batch 4: Desktop/Mobile composition tuning, final browser evidence, and the exhaustive frozen-baseline differential are complete.
+- P4-04 Books Scene: explicit Desktop/Mobile human visual acceptance received and phase closed.
+- Workspace note: RC work is isolated on `feat/release-candidate-phase4`,
+  created from stable commit `9f2f103`; branch merge and deployable release
+  creation remain deferred.
 
 P4-04 authority:
 
 - `docs/superpowers/specs/2026-07-27-p4-04-books-scene-design.md`
 - `docs/superpowers/plans/2026-07-27-p4-04-books-scene-implementation-plan.md`
+
+Release Candidate authority:
+
+- `docs/superpowers/specs/2026-07-27-release-candidate-phase4-closure.md`
+- `docs/superpowers/plans/2026-07-27-release-candidate-phase4-closure-plan.md`
 
 This handoff supersedes earlier statements that P4-03 was waiting for implementation, final E2E verification, or human visual acceptance.
 
@@ -246,7 +261,170 @@ Verification:
 - No Books, About, content, manifest, asset, motion, or unrelated check failed. No frozen Hero/Media/About runtime parameter or frozen threshold was changed.
 - The observed failure set equals the accepted frozen 11-item set, with no new failures and no material metric regression. The authoritative differential is `artifacts/p4-04-books-batch2/post-batch-e2e-differential.json`.
 
-## 10. Next session start
+## 10. P4-04 Batch 3 implementation and verification
+
+Batch 3 is complete.
+
+Implemented:
+
+- `BooksScene.getCameraIntent()` with fixed FOV `48`, fixed `0.35` camera
+  offset, `-0.15` depth bias, and the measured Books world anchor as target;
+- formal `QuoteBooksPolicy` orchestration in `SceneDirector`;
+- About dominance protection while Books is only preloading;
+- News and Quote as DOM-only `global-idle` intervals;
+- Books preload, activation request, all-cover resource gate, dominant commit,
+  cache, reverse, cached re-entry, fast jump, and reduced-motion convergence;
+- removal of the Batch 2 manual lifecycle bridge from `ExperienceRoot`;
+- five-state all-or-nothing fallback for all three cover images;
+- Books context loss and restore with fallback-before-disposal ordering;
+- stable browser probe exposure for real E2E inspection;
+- Next development-origin configuration for the canonical
+  `http://127.0.0.1:3100/` evidence URL.
+
+Readiness is intentionally split as specified by the implementation plan:
+renderer resource readiness (`3 textures / 3 materials / 1 geometry`) permits
+the existing atomic registry activation, while fallback hiding additionally
+requires all three covers to be rendered, visible, frustum-valid, and
+positive-area in the active dominant composition.
+
+Verified resource budget after activation and context restore:
+
+- three active CPU asset owners, each count `1`;
+- three textures;
+- three materials;
+- one shared geometry;
+- three meshes;
+- seven GPU leases;
+- approximately three Books draw calls.
+
+Verification:
+
+- lint: zero errors; five pre-existing unrelated warnings;
+- typecheck: pass;
+- unit: `49 files / 298 tests` after the final Director regression test;
+- production build: pass;
+- Books Batch 3 focused browser suite: `10/10`;
+- Books recordings: `6/6`;
+- About E2E: `12/12`;
+- full E2E, including exhaustive continuation after the existing serial
+  describe stopped at its first frozen failure:
+  `64 discovered / 52 passed / 11 failed / 1 existing skip`;
+- observed failures equal the exact frozen Hero/Media 11-item set;
+- vacuum topology remains the frozen `15 / 10 / 15 / 10` frame counts;
+- no assertion, skip rule, Hero/Media parameter, or threshold was changed.
+
+Evidence:
+
+- `artifacts/p4-04-books-batch3/full-e2e-differential.json`;
+- 20 required Desktop/Mobile named screenshots plus context-loss evidence;
+- six Desktop/Mobile WebM recordings;
+- browser logs and normalized complete E2E logs in
+  `artifacts/p4-04-books-batch3/`.
+
+## 11. P4-04 Batch 4 implementation and closure
+
+Batch 4 implementation and automated verification are complete. The user has
+explicitly approved the final Desktop and Mobile browser evidence, so P4-04
+Books Scene is closed.
+
+Composition changes are deliberately limited to Books:
+
+- the ready-active Books section and cover stage stop applying the translucent
+  surface and backdrop blur that softened the shared Canvas;
+- Mobile visually orders the normal-flow cover stage before the DOM reading
+  archive while preserving semantic DOM order;
+- Books switches to the same stage-first single-column normal flow at
+  `64rem` and below; `800 x 900` and `1024 x 900` evidence proves all three
+  projected covers remain inside the stage and outside the reading column;
+- Mobile reserves `3rem` above the stage so the right supporting title remains
+  below the sticky site header;
+- only Books cover `translateX`, `translateY`, `scale`, `opacity`, and existing
+  depth values were tuned;
+- CameraIntent, SceneDirector, visual-ready, lifecycle, resource ownership,
+  renderer, camera, RAF, Hero, Media, and About parameters were not changed by
+  Batch 4.
+
+Representative hold metrics:
+
+- Desktop primary / left / right bounds:
+  `[904.929, 1180.633, 192.683, 606.239]`,
+  `[751.287, 974.275, 260.220, 594.702]`,
+  `[1157.556, 1358.007, 159.123, 459.799]`;
+- Desktop areas: `114018.843 / 74585.701 / 60270.859`; opacities:
+  `1 / 0.92 / 0.86`; supporting exposure: `0.689015 / 0.884873`;
+- Mobile primary / left / right bounds:
+  `[111.589, 278.411, 112.265, 362.496]`,
+  `[46.309, 171.768, 163.296, 351.483]`,
+  `[255.892, 367.921, 81.486, 249.527]`;
+- Mobile areas: `41743.836 / 23609.863 / 18825.585`; opacities:
+  `1 / 0.9198 / 0.8597`; supporting exposure: `0.520328 / 0.798994`;
+- Quote visible area and horizontal overflow are both zero on both viewports;
+  Desktop CTA visible area is `7854`;
+- forward/reverse maximum projected-bound deltas are approximately
+  `0.000012px` Desktop and `0.001035px` Mobile.
+
+Resource and compositing evidence remains within the locked architecture:
+
+- one Canvas, one renderer, one camera, and one RAF;
+- three Books draw calls;
+- three active CPU cover owners, each count `1`;
+- seven Books GPU leases: three textures, one geometry, three materials;
+- ready-active fallback opacity is atomically `0 / 0 / 0`;
+- unavailable and context-lost fallback opacity is atomically `1 / 1 / 1`;
+- context restore returns to the same bounds and owner counts;
+- normal composited and Canvas-only cover bounds are equal, and visual review
+  confirms the normal page no longer darkens or blurs the covers.
+
+Final evidence is stored under `artifacts/p4-04-books-batch4/final/`:
+
+- 30 named Desktop/Mobile PNG state captures plus two metrics JSON files;
+- 16 named WebM journeys, eight per viewport;
+- a structured artifact manifest records every required named file with
+  viewport, direction, progress/phase, reduced-motion, fallback, and context
+  metadata, and reports `50 / 50` required named artifacts with zero missing;
+- `ffprobe` confirms every Desktop recording is `1440 x 900` and every Mobile
+  recording is `390 x 844`, all VP8 `yuv420p`, without letterboxing;
+- manual contact-sheet review covers forward, reverse, enter/hold/depart, fast,
+  reduced-motion, unavailable, context-loss, and restore paths.
+
+Verification:
+
+- lint: zero errors and the same five pre-existing unrelated warnings;
+- typecheck: pass;
+- unit: `49 files / 299 tests`;
+- production build: pass;
+- complete About + Books focused E2E: `45 / 45`;
+- complete E2E with per-declaration continuation after the serial stop,
+  corrected by RC-00 declaration accounting:
+  `76 discovered / 58 passed / 11 failed / 7 conditional skips / 0 omitted`;
+- the failure set exactly equals the frozen Hero/Media 11-item set;
+- the visual-vacuum topology remains `15 / 10 / 15 / 10` frames;
+- no assertion, threshold, skip rule, or frozen Hero/Media parameter changed.
+
+The authoritative differential is:
+
+```text
+artifacts/p4-04-books-batch4/full-e2e-differential.json
+```
+
+System Chrome was also used for independent visual capture. Its RAF/rendering
+cadence exposed three strict legacy About subpixel timing assertions, while
+the project-standard Playwright Chromium passed the same About set `8 / 8`.
+The final focused and full aggregates use the project-standard Chromium so
+they remain comparable to the frozen baseline; no About code or threshold was
+changed.
+
+The Codex visual review found none of the ten closure blockers in the Batch 4
+brief, and the final human visual review accepted the Desktop and Mobile
+composition. Forward, reverse, fast-scroll, reduced-motion, grouped fallback,
+and context lost/restore behavior are accepted.
+
+The current development covers contain minor compression detail that does not
+block closure. Production cover replacement requires a Books-only art review.
+The frozen 11 Hero/Media E2E failures and the preload-only reverse lifecycle
+Minor remain independent Release Candidate technical debt.
+
+## 12. RC-01 start
 
 Read in this order:
 
@@ -258,12 +436,28 @@ Read in this order:
 6. `docs/architecture/interface-contracts.md`
 7. `docs/superpowers/specs/2026-07-27-p4-04-books-scene-design.md`
 8. `docs/superpowers/plans/2026-07-27-p4-04-books-scene-implementation-plan.md`
+9. `docs/superpowers/specs/2026-07-27-release-candidate-phase4-closure.md`
+10. `docs/superpowers/plans/2026-07-27-release-candidate-phase4-closure-plan.md`
 
-Begin Batch 3 with Books CameraIntent and formal Quote → Books orchestration. Then integrate the formal grouped DOM fallback and context-restoration policy. Remove the clearly marked Batch 2 development lifecycle bridge when the formal orchestration replaces it.
+The next phase is:
 
-Do not recreate the Batch 1/2 manifest, progress, motion, scene, renderer, or resource-owner interfaces. Do not modify Hero, Media, or About thresholds/resources to make Books tests pass, and keep frozen-runtime baselines separate from Books regressions.
+```text
+Release Candidate / Phase 4 Closure
+```
 
-## 11. P4-04 Batch 2 differential gate
+Do not create or name a P4-05 Scene. Chapter development has ended. RC-00 is
+complete. Start RC-01 with:
+
+1. the two confirmed Media Desktop composition blockers;
+2. the nine outdated test-semantics repairs;
+3. the optional preload-only cold-resident cleanup decision;
+4. a zero-omission full E2E exit run.
+
+P4-04 remains closed during this work. A production cover replacement triggers
+only a Books-specific art review unless new evidence identifies a separate
+runtime regression.
+
+## 13. P4-04 Batch 2, Batch 3, and Batch 4 differential gate
 
 Batch 2 is explicitly authorized against the frozen 11-failure record in:
 
@@ -280,4 +474,186 @@ The final repository-wide E2E result is accepted only when all of the following 
 
 The two failures with direct pre-Batch proof are classified as `confirmed-earlier-baseline`. The other nine are classified as `current-baseline-without-historical-proof`; they are accepted only as a frozen differential baseline for Batch 2, not represented as historically proven regressions.
 
-Batch 2 satisfies this differential gate. The failure set is exactly the frozen 11-item set; all newly added Books tests and all About tests pass; repeat vacuum measurements retain the frozen 15-frame mobile / 10-frame desktop topology; and no assertion, skip policy, or frozen Hero/Media parameter was changed to produce the result.
+Batch 2 and Batch 3 satisfy this differential gate. The Batch 3 aggregate is
+`64 / 52 / 11 / 1`; its failure set is exactly the frozen 11-item set. All
+newly added Books tests and all About tests pass; repeat vacuum measurements
+retain the frozen 15-frame mobile / 10-frame desktop topology; and no
+assertion, skip policy, or frozen Hero/Media parameter was changed to produce
+the result.
+
+Batch 4 also satisfies the failure-topology gate. RC-00 corrected its
+declaration accounting to `76 / 58 / 11 / 7 / 0 omitted`: six opt-in evidence
+declarations skip when capture flags are absent and were previously counted as
+passes. All About and Books focused product checks pass, the failure set
+remains exactly the same 11 items, and the deterministic vacuum topology
+remains unchanged.
+
+## 14. RC-00 closure record
+
+RC-00 ran from stable commit `9f2f103` on
+`feat/release-candidate-phase4`, using isolated Next output and ports without
+reusing the user's preview.
+
+Current exhaustive E2E result:
+
+```text
+76 discovered / 58 passed / 11 failed / 7 skipped / 0 omitted
+```
+
+The automated entry `pnpm test:e2e:rc` runs the entire suite, detects
+expected-pass declarations skipped by serial failure, reruns their exact
+declarations, and produces one combined no-omission report.
+
+The 11 failures are adjudicated as:
+
+- two Category A product blockers: Desktop Media secondary exposure/focal and
+  Desktop Media hold area/exposure;
+- nine Category B test-semantics repairs: reduced-motion dominance, four
+  DOM-omitting vacuum checks, fast-jump coherence, and three invalid
+  fixed-progress fallback prerequisites;
+- zero Category C or D findings in the canonical run.
+
+The preload-only reverse Minor is a proven-safe cold-resident state: no owner
+growth, stale CameraIntent, or reactivation failure. It is not a current
+release blocker.
+
+The five lint warnings are removed without Runtime behavior changes. RC-01 is
+authorized to repair the two product defects and nine test semantics; it is not
+authorized to merge, deploy, replace production assets, or add a new Scene.
+
+## 15. RC-01 closure record
+
+RC-01 is closed on `feat/release-candidate-phase4`. The single Canvas,
+Renderer, Camera, RAF, DOM-first, native Three.js, and no-R3F architecture is
+unchanged.
+
+- The shared product root cause was an oversized Desktop Media main hold pose.
+  Its centralized hold scale is now `0.95`; the approved Mobile composition
+  keeps a separate responsive multiplier.
+- Final `1440x900` browser evidence records Main area `74168.36`, Secondary
+  exposure `0.20777`, exposed-asset fraction `0.28652` containing focal x
+  `0.28`, and no horizontal overflow. Both Category A blockers are closed.
+- The nine Category B tests now verify composed DOM/WebGL subjects, legal
+  `global-idle`, zero-travel reduced motion, atomic fast-jump convergence, and
+  grouped ready/loading/context-loss fallback behavior.
+- Final isolated E2E: `76 discovered / 69 passed / 0 failed / 7 explicit
+  opt-in skips / 0 omitted`. Local ignored capture evidence is in
+  `.tmp/rc01-evidence-final/`.
+
+Next entry: **RC-02 Full-site visual, navigation, SEO, and accessibility
+validation**. Do not merge or deploy in RC-02 without separate authority.
+
+## 16. RC-02 engineering and audit closure
+
+RC-02 completes the full-site engineering/audit pass. The release owner still
+must give final human visual sign-off before RC-03 starts; this record does not
+mark the site deployable.
+
+Resolved audit findings:
+
+- development metadata, canonical, Open Graph, Twitter card, robots, sitemap,
+  brand copy, and app landmark now identify the fictional `DEV-HOST-01`
+  archive; no real-person identity, ISBN, publisher, commerce, or ticketing
+  metadata is published;
+- all live local CTAs now resolve to real in-page anchors, dead footer routes
+  are removed, the development Books CTA is a disabled native button, and the
+  skip link transfers focus to the main landmark;
+- every content section has an accessible heading relationship, images retain
+  alternatives, Canvas remains `aria-hidden`, and `/icon.svg` prevents the
+  browser favicon 404;
+- Mobile Books now reserves an additional 2px before the cover stage so it
+  clears the sticky header; the accepted Books hierarchy is unchanged;
+- the Mobile Media exposure assertion now waits for the real damped
+  CameraIntent projection to settle before retaining its existing hard
+  exposure/focal/overflow gates. No Media composition value was changed.
+
+Browser evidence is ignored and indexed in
+`artifacts/release-candidate/rc02/artifact-manifest.json`. It contains all 32
+viewport/mode cells, representative composited screenshots, four correctly
+sized recordings, metadata/accessibility/console audits, and lifecycle/resource
+matrix data. Context loss/restore succeeds at all four viewports with fallback
+visible on loss and one Canvas restored afterward.
+
+Fresh verification:
+
+- `pnpm lint`: 0 errors / 0 warnings;
+- `pnpm typecheck`: pass;
+- `pnpm test`: 50 files / 303 tests passed;
+- `pnpm build`: pass;
+- `pnpm test:e2e:rc`: `83 discovered / 76 passed / 0 failed / 7 explicit
+  opt-in skipped / 0 omitted`.
+
+There are zero confirmed functional or non-evidence E2E blockers. RC-02
+received explicit temporary human visual approval on 2026-07-27; later visual
+refinements are deferred and may be addressed on demand. Deferred RC-03 release
+gates are production asset replacement/licensing review and performance
+budgets. The current
+development portrait is reused by Hero, Media, and About, and the Books covers
+remain development studies; this can read as visually repetitive and requires
+asset replacement rather than another Scene redesign.
+
+## 17. RC-03 release-readiness start
+
+RC-03 started on branch `feat/rc03-release-readiness` from `c8092b4`. The
+locked Hero, Media, About, and Books compositions are out of scope. Production
+build passed on 2026-07-27 with five static routes and 1.37 MB emitted static
+JavaScript, 18.5 KB CSS, and 26.78 MB of public assets (including non-runtime
+PNG masters). Isolated production HTTP smoke passed for `/`, robots, sitemap,
+icon, OG asset, and a 404. Evidence is ignored under
+`artifacts/release-candidate/rc03/`.
+
+Open release gates are recorded in `docs/release/`: asset provenance and
+releases, legacy social placeholder text, removal of public non-runtime source
+assets, security-header/source-map policy, debug-global production gating, and
+the remaining browser production smoke matrix. These are not Scene regressions.
+## 18. RC-03A technical release hardening
+
+RC-03A removed public legacy-brand placeholder text, moved five non-runtime PNG
+masters from `public` to `assets-source`, and moved ignored generation copies
+out of the public tree. Public deployment bytes fell from 26,778,470 B to
+1,005,795 B. Signed Scene geometry and runtime contracts did not change.
+
+Production diagnostics remain available to development/test tooling, but the
+WebGL probe and blend-log switch are inactive in production unless
+`NEXT_PUBLIC_ENABLE_RUNTIME_DIAGNOSTICS=true` is explicitly set. The app uses
+`NEXT_PUBLIC_SITE_URL` with a safe noindex fallback, has production security
+headers, and disables browser source maps. Fresh isolated production smoke
+passed across four viewports and all requested motion/fallback/context modes.
+Remaining work is asset provenance/rights, real domain/host operations, and
+RC-03B legal/art review; do not deploy.
+
+## 19. RC-03B production identity and operations sign-off
+
+RC-03B locks the external identity as a **fictional character-brand and
+DOM-first WebGL spatial-narrative experiment**. `DEV-HOST-01` is a fictional
+development identity; its timeline is fictional and the three FIELD NOTES
+books are concept publications. No real purchasing, ticketing, publishing,
+awards, or person-related commercial service is offered or implied.
+
+The Demo RC remains allowed for local, private-preview, and password-protected
+review channels when the disclosure and `noindex, nofollow` policy are kept.
+Public production is not approved: all development imagery, crops, covers, OG,
+and unresolved brand evidence are `unknown / not approved` in the authoritative
+asset inventory. No commercial-use, model/property-release, trademark, or
+attribution right is inferred without evidence.
+
+Domain, host, monitoring, cache invalidation, rollback, release, approval, and
+emergency-offline owners are still unassigned. `NEXT_PUBLIC_SITE_URL` therefore
+uses the safe development fallback and must not be changed to a guessed domain.
+RC-04 input is the final technical/regression and release-owner decision pass;
+it may adjudicate these gates but must not reopen signed Scene composition.
+
+## 20. RC-04 final regression and Demo RC
+
+RC-04 completed the final technical regression without changing Scene,
+Camera, Renderer, or Runtime behavior. Node `22.15.0`, pnpm `11.9.0`, package
+version `0.1.0`, lint/typecheck/unit/build, the 85-test RC suite, and the six
+test isolated production smoke suite are recorded in the RC-04 release docs.
+The reproducible Demo RC build is `0.4.0-rc.1` as a release label while the
+package version remains `0.1.0`.
+
+Demo RC is ready for local, private-preview, or password-protected use only.
+Public Production is not released and remains blocked by formal assets/rights,
+real domain/host configuration, named operations owners, and final legal/art
+approval. The next action is an explicit PR/merge decision; do not deploy or
+merge automatically.

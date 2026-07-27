@@ -1,13 +1,14 @@
-﻿import type { MetadataRoute } from "next";
+import type { MetadataRoute } from "next";
+import { resolveSiteUrl } from "@/lib/site/siteUrl";
 
 export default function robots(): MetadataRoute.Robots {
   return {
     rules: [
       {
         userAgent: "*",
-        allow: "/",
+        disallow: "/",
       },
     ],
-    sitemap: "https://www.trevornoah.com/sitemap.xml",
+    sitemap: new URL("/sitemap.xml", resolveSiteUrl()).toString(),
   };
 }

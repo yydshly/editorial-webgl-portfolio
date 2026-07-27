@@ -1,7 +1,7 @@
 {
   "assetId": "hero-portrait-placeholder",
   "master": {
-    "path": "/assets/hero/hero-placeholder-master.png",
+    "path": "/assets-source/hero/hero-placeholder-master.png",
     "format": "png",
     "width": 1024,
     "height": 1536,

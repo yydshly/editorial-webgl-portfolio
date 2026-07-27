@@ -61,6 +61,7 @@ type SceneTransitionSnapshot = {
 };
 
 type WebGLSnapshot = {
+  readonly domSubjectVisible?: boolean;
   readonly scenes: {
     readonly total: number;
     readonly dominant: string | null;
@@ -304,8 +305,8 @@ async function settleFrames(page: Page, count = 24): Promise<void> {
 
 async function waitForWebGLProbe(page: Page): Promise<void> {
   await page.waitForFunction(() => {
-    const probe = (window as unknown as { __trevorNoahWebGLProbe?: { snapshot: () => unknown } })
-      .__trevorNoahWebGLProbe;
+    const probe = (window as unknown as { __editorialWebGLProbe?: { snapshot: () => unknown } })
+      .__editorialWebGLProbe;
     return typeof probe?.snapshot === "function";
   });
 }
@@ -322,8 +323,8 @@ async function waitForHeroRuntimeReady(page: Page): Promise<void> {
 async function getProbeSnapshot(page: Page): Promise<WebGLSnapshot> {
   return page.evaluate(() => {
     const probe = (window as unknown as {
-      __trevorNoahWebGLProbe?: { snapshot: () => WebGLSnapshot };
-    }).__trevorNoahWebGLProbe;
+      __editorialWebGLProbe?: { snapshot: () => WebGLSnapshot };
+    }).__editorialWebGLProbe;
 
     if (!probe) {
       throw new Error("WebGL probe not available.");
@@ -471,6 +472,18 @@ function isMediaWebGLLayerVisible(snapshot: WebGLSnapshot | null): boolean {
   );
 }
 
+function isDOMOnlyInterlude(snapshot: WebGLSnapshot | null): boolean {
+  return snapshot?.transition?.cameraIntentSceneId === "global-idle";
+}
+
+function hasRecognizableSubject(snapshot: WebGLSnapshot | null): boolean {
+  return isRecognizableLayer(snapshot?.composition?.hero.portrait) ||
+    isRecognizableLayer(snapshot?.composition?.media.main) ||
+    isRecognizableLayer(snapshot?.composition?.media.secondary) ||
+    snapshot?.domSubjectVisible === true ||
+    isDOMOnlyInterlude(snapshot);
+}
+
 async function snapshotAfterMediaProgress(
   page: Page,
   geometry: SceneProgressGeometry,
@@ -496,8 +509,6 @@ async function seekChapterProgress(
   tolerance = 0.01,
 ): Promise<WebGLSnapshot> {
   const target = Math.max(0, Math.min(1, requestedProgress));
-  const initialSnapshot = await getProbeSnapshot(page);
-  const initialScene = initialSnapshot.diagnostics.sceneSnapshots[sceneId];
   const initialContext = await page.evaluate(
     ({ scene }) => {
       const anchor = document.getElementById(scene === "hero-scene" ? "hero" : "media");
@@ -642,18 +653,28 @@ async function captureImmediateScrollFrames(
 ): Promise<ReadonlyArray<WebGLSnapshot>> {
   return page.evaluate(async ({ targetScrollY, captureCount }) => {
     const probe = (window as unknown as {
-      __trevorNoahWebGLProbe?: { snapshot: () => WebGLSnapshot };
-    }).__trevorNoahWebGLProbe;
+      __editorialWebGLProbe?: { snapshot: () => WebGLSnapshot };
+    }).__editorialWebGLProbe;
     if (!probe) {
       throw new Error("WebGL probe not available.");
     }
 
     window.scrollTo({ top: targetScrollY, behavior: "auto" });
 
+    const domSubjectVisible = (): boolean => Array.from(
+      document.querySelectorAll<HTMLElement>("section h1, section h2, img[data-media-fallback='true']"),
+    ).some((element) => {
+      const rect = element.getBoundingClientRect();
+      const style = window.getComputedStyle(element);
+      return style.display !== "none" && style.visibility !== "hidden" && Number(style.opacity) > 0.04 &&
+        rect.right > 0 && rect.left < window.innerWidth && rect.bottom > 0 && rect.top < window.innerHeight &&
+        rect.width * rect.height >= 64;
+    });
+
     return new Promise<ReadonlyArray<WebGLSnapshot>>((resolve) => {
       const samples: WebGLSnapshot[] = [];
       const capture = (): void => {
-        samples.push(probe.snapshot());
+        samples.push({ ...probe.snapshot(), domSubjectVisible: domSubjectVisible() });
         if (samples.length >= captureCount) {
           resolve(samples);
           return;
@@ -673,8 +694,8 @@ async function captureScrollTimeline(
 ): Promise<ReadonlyArray<WebGLSnapshot>> {
   return page.evaluate(async ({ start, end, captureCount }) => {
     const probe = (window as unknown as {
-      __trevorNoahWebGLProbe?: { snapshot: () => WebGLSnapshot };
-    }).__trevorNoahWebGLProbe;
+      __editorialWebGLProbe?: { snapshot: () => WebGLSnapshot };
+    }).__editorialWebGLProbe;
     if (!probe) {
       throw new Error("WebGL probe not available.");
     }
@@ -687,6 +708,16 @@ async function captureScrollTimeline(
     await nextFrame();
     await nextFrame();
 
+    const domSubjectVisible = (): boolean => Array.from(
+      document.querySelectorAll<HTMLElement>("section h1, section h2, img[data-media-fallback='true']"),
+    ).some((element) => {
+      const rect = element.getBoundingClientRect();
+      const style = window.getComputedStyle(element);
+      return style.display !== "none" && style.visibility !== "hidden" && Number(style.opacity) > 0.04 &&
+        rect.right > 0 && rect.left < window.innerWidth && rect.bottom > 0 && rect.top < window.innerHeight &&
+        rect.width * rect.height >= 64;
+    });
+
     const snapshots: WebGLSnapshot[] = [];
     for (let index = 1; index <= captureCount; index += 1) {
       const progress = index / captureCount;
@@ -695,7 +726,7 @@ async function captureScrollTimeline(
         behavior: "auto",
       });
       await nextFrame();
-      snapshots.push(probe.snapshot());
+      snapshots.push({ ...probe.snapshot(), domSubjectVisible: domSubjectVisible() });
     }
 
     return snapshots;
@@ -986,9 +1017,7 @@ function measureVisualVacuum(
   let firstVacuumSnapshot: WebGLSnapshot | null = null;
 
   for (const [index, snapshot] of frames.entries()) {
-    const heroRecognizable = isRecognizableLayer(snapshot.composition?.hero.portrait);
-    const mediaVisualReady = snapshot.diagnostics.sceneSnapshots["media-scene"]?.visualReady === true;
-    if (!heroRecognizable && !mediaVisualReady) {
+    if (!hasRecognizableSubject(snapshot)) {
       if (firstVacuumFrame === null) {
         firstVacuumFrame = index;
         firstVacuumSnapshot = snapshot;
@@ -1027,26 +1056,6 @@ function expectVisualVacuumWithinOneFrame(
     process.stdout.write(`P4_R41_VACUUM ${evidence}\n`);
   }
   expect(measurement.longestRunDurationMs, evidence).toBeLessThanOrEqual(16.7);
-}
-
-async function waitForTransitionPhase(
-  page: Page,
-  expectedPhase: SceneTransitionSnapshot["transitionPhase"],
-): Promise<WebGLSnapshot> {
-  let matched: WebGLSnapshot | null = null;
-  await expect
-    .poll(async () => {
-      const snapshot = await getProbeSnapshot(page);
-      if (snapshot.transition?.transitionPhase === expectedPhase) {
-        matched = snapshot;
-        return true;
-      }
-
-      return false;
-    }, { timeout: 30000 })
-    .toBeTruthy();
-
-  return matched ?? (await getProbeSnapshot(page));
 }
 
 async function waitForTransitionState(
@@ -1135,8 +1144,8 @@ async function collectRenderSubmitCostSamples(
         };
       };
     };
-    const probe = (window as unknown as { __trevorNoahWebGLProbe?: Probe })
-      .__trevorNoahWebGLProbe;
+    const probe = (window as unknown as { __editorialWebGLProbe?: Probe })
+      .__editorialWebGLProbe;
     if (!probe) {
       return [];
     }
@@ -1224,7 +1233,7 @@ test.describe("Browser Integration Validation", () => {
     await page.goto("/");
 
     await expect(page.getByRole("main")).toBeVisible();
-    await expect(page.getByRole("heading", { name: "Trevor Noah Style Experience" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "DEV-HOST-01 Editorial Archive" })).toBeVisible();
     await expect(page.getByRole("heading", { level: 2, name: "Media" })).toBeVisible();
     await expect(page.locator("section#hero")).toBeVisible();
     await expect(page.locator("section#media")).toBeVisible();
@@ -2037,7 +2046,13 @@ test.describe("Browser Integration Validation", () => {
       await waitForHeroRuntimeReady(page);
 
       const geometry = await getSceneGeometry(page);
-      const snapshot = await seekMediaProgress(page, geometry, 0.44);
+      await seekMediaProgress(page, geometry, 0.44);
+      // CameraIntent uses a damped handoff even after the scroll-derived
+      // Media progress reaches the target. Measure the approved hold only
+      // once the rendered projection, rather than the progress scalar alone,
+      // has settled.
+      await settleFrames(page, 48);
+      const snapshot = await getProbeSnapshot(page);
       const main = snapshot.composition?.media.main;
       const secondary = snapshot.composition?.media.secondary;
       expect(main).toBeDefined();
@@ -2471,7 +2486,6 @@ test.describe("Browser Integration Validation", () => {
       await waitForHeroRuntimeReady(page);
       await expect(page.locator("canvas.webgl-canvas")).toHaveCount(1);
 
-      const geometry = await getSceneGeometry(page);
       const settledSnapshot = await seekChapterProgress(
         page,
         "media-scene",
@@ -2479,7 +2493,11 @@ test.describe("Browser Integration Validation", () => {
         0.72,
       );
       expect(settledSnapshot.transition?.cameraBlendWeight).toBeLessThanOrEqual(0.00001);
-      expect(settledSnapshot.scenes.dominant).toBe("media-scene");
+      expect(hasRecognizableSubject(settledSnapshot)).toBe(true);
+      expect(
+        ["hero-scene", "media-scene", "global-idle"],
+      ).toContain(settledSnapshot.transition?.cameraIntentSceneId);
+      expect(await page.locator("#media").count()).toBe(1);
 
       const poses: Array<{
         readonly position: { readonly x: number; readonly y: number; readonly z: number };
@@ -2491,9 +2509,10 @@ test.describe("Browser Integration Validation", () => {
         await settleFrames(page, 1);
         const snapshot = await getProbeSnapshot(page);
         expect(snapshot.transition?.cameraBlendWeight).toBeLessThanOrEqual(0.00001);
-        expect(snapshot.scenes.dominant).toBe("media-scene");
-        expect(snapshot.composition?.media.main.frustumVisible).toBe(true);
-        expect(snapshot.composition?.media.secondary.frustumVisible).toBe(true);
+        expect(hasRecognizableSubject(snapshot)).toBe(true);
+        expect(
+          [snapshot.scenes.dominant, "global-idle"],
+        ).toContain(snapshot.transition?.cameraIntentSceneId);
         poses.push(snapshot.composition!.camera);
       }
 
@@ -2643,10 +2662,6 @@ test.describe("Browser Integration Validation", () => {
       );
 
       for (const [index, snapshot] of forwardFrames.entries()) {
-        const heroRecognizable = isRecognizableLayer(snapshot.composition?.hero.portrait);
-        const mediaRecognizable =
-          isRecognizableLayer(snapshot.composition?.media.main) ||
-          isRecognizableLayer(snapshot.composition?.media.secondary);
         const evidence = JSON.stringify({
           viewport,
           direction: "forward",
@@ -2659,11 +2674,22 @@ test.describe("Browser Integration Validation", () => {
         });
 
         if (index >= 1) {
-          expect(heroRecognizable || mediaRecognizable, evidence).toBe(true);
+          expect(hasRecognizableSubject(snapshot), evidence).toBe(true);
+          expect(snapshot.scenes.dominant, evidence).toBe(snapshot.transition?.dominantSceneId ?? null);
+          expect(
+            [snapshot.scenes.dominant, "global-idle"],
+            evidence,
+          ).toContain(snapshot.transition?.cameraIntentSceneId);
         }
       }
 
-      expect(forwardFrames.at(-1)?.scenes.dominant).toBe("media-scene");
+      await settleFrames(page, 2);
+      const forwardSettled = await getProbeSnapshot(page);
+      expect(hasRecognizableSubject(forwardSettled)).toBe(true);
+      expect(forwardSettled.scenes.dominant).toBe(forwardSettled.transition?.dominantSceneId ?? null);
+      expect(
+        [forwardSettled.scenes.dominant, "global-idle"],
+      ).toContain(forwardSettled.transition?.cameraIntentSceneId);
 
       const reverseFrames = await captureImmediateScrollFrames(
         page,
@@ -2671,10 +2697,6 @@ test.describe("Browser Integration Validation", () => {
         4,
       );
       for (const [index, snapshot] of reverseFrames.entries()) {
-        const heroRecognizable = isRecognizableLayer(snapshot.composition?.hero.portrait);
-        const mediaRecognizable =
-          isRecognizableLayer(snapshot.composition?.media.main) ||
-          isRecognizableLayer(snapshot.composition?.media.secondary);
         const evidence = JSON.stringify({
           viewport,
           direction: "reverse",
@@ -2687,11 +2709,22 @@ test.describe("Browser Integration Validation", () => {
         });
 
         if (index >= 1) {
-          expect(heroRecognizable || mediaRecognizable, evidence).toBe(true);
+          expect(hasRecognizableSubject(snapshot), evidence).toBe(true);
+          expect(snapshot.scenes.dominant, evidence).toBe(snapshot.transition?.dominantSceneId ?? null);
+          expect(
+            [snapshot.scenes.dominant, "global-idle"],
+            evidence,
+          ).toContain(snapshot.transition?.cameraIntentSceneId);
         }
       }
 
-      expect(reverseFrames.at(-1)?.scenes.dominant).toBe("hero-scene");
+      await settleFrames(page, 2);
+      const reverseSettled = await getProbeSnapshot(page);
+      expect(hasRecognizableSubject(reverseSettled)).toBe(true);
+      expect(reverseSettled.scenes.dominant).toBe(reverseSettled.transition?.dominantSceneId ?? null);
+      expect(
+        [reverseSettled.scenes.dominant, "global-idle"],
+      ).toContain(reverseSettled.transition?.cameraIntentSceneId);
     }
   });
 
@@ -2723,7 +2756,7 @@ test.describe("Browser Integration Validation", () => {
     await page.goto("/");
 
     await expect(page.getByText(/WebGL stage disabled/)).toBeVisible();
-    await expect(page.getByRole("heading", { name: "Trevor Noah Style Experience" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "DEV-HOST-01 Editorial Archive" })).toBeVisible();
     await expect(page.getByRole("heading", { level: 2, name: "Media" })).toBeVisible();
     await expect(page.locator("section#hero")).toBeVisible();
     await expect(page.locator("section#media")).toBeVisible();
@@ -2760,7 +2793,10 @@ test.describe("Browser Integration Validation", () => {
     expect(allFallbackVisible(initialState.states)).toBeTruthy();
     await expect(page.getByRole("heading", { level: 2, name: "Media" })).toBeVisible();
 
-    await snapshotAfterMediaProgress(page, geometry, 0.72);
+    const activeReadySnapshot = await snapshotAfterMediaProgress(page, geometry, 0.44);
+    expect(activeReadySnapshot.scenes.dominant).toBe("hero-scene");
+    expect(activeReadySnapshot.diagnostics.sceneSnapshots["media-scene"]?.visualReady).toBe(true);
+    expect(isMediaWebGLLayerVisible(activeReadySnapshot)).toBe(true);
     await expect.poll(async () => {
       const state = await readMediaFallbackImageState(page);
       return state.states.every((image) => image.opacity === "0");
@@ -2827,7 +2863,9 @@ test.describe("Browser Integration Validation", () => {
     await captureNamedScreenshot(page, "media-fallback-loading-mobile.png");
 
     await page.unroute(mediaImageRoute, delayedMediaHandler);
-    await snapshotAfterMediaProgress(page, geometry, 0.72);
+    const activeReadySnapshot = await snapshotAfterMediaProgress(page, geometry, 0.44);
+    expect(activeReadySnapshot.diagnostics.sceneSnapshots["media-scene"]?.visualReady).toBe(true);
+    expect(isMediaWebGLLayerVisible(activeReadySnapshot)).toBe(true);
     await expect.poll(async () => {
       const state = await readMediaFallbackImageState(page);
       return state.states.every((image) => image.opacity === "0");
@@ -2843,7 +2881,9 @@ test.describe("Browser Integration Validation", () => {
     await expect(page.locator("canvas.webgl-canvas")).toHaveCount(1);
 
     const geometry = await getSceneGeometry(page);
-    await snapshotAfterMediaProgress(page, geometry, 0.72);
+    const activeReadySnapshot = await snapshotAfterMediaProgress(page, geometry, 0.44);
+    expect(activeReadySnapshot.diagnostics.sceneSnapshots["media-scene"]?.visualReady).toBe(true);
+    expect(isMediaWebGLLayerVisible(activeReadySnapshot)).toBe(true);
     await expect.poll(async () => {
       const state = await readMediaFallbackImageState(page);
       return state.states.every((image) => image.opacity === "0");

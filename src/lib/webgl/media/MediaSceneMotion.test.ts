@@ -99,6 +99,18 @@ describe("MediaSceneMotion", () => {
     expect(hold.secondary).toEqual(MEDIA_MOTION_CONFIG.secondary.holdPose);
   });
 
+  it("uses the calibrated Desktop hold scale that leaves the secondary legible", () => {
+    const hold = resolveMediaMotion({
+      reducedMotion: false,
+      progress: 0.44,
+      phase: "hold",
+    });
+
+    expect(hold.main.scale).toBe(0.95);
+    expect(hold.secondary.translateX).toBe(17);
+    expect(hold.secondary.opacity).toBeLessThan(hold.main.opacity);
+  });
+
   it("maps depart phase transforms with interpolation", () => {
     const start = resolveMediaMotion({
       reducedMotion: false,

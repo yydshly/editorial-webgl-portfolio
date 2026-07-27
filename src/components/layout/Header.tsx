@@ -47,8 +47,8 @@ export default function Header({ brandName, navItems }: HeaderProps) {
             </ul>
           </nav>
           <div className="site-header__actions">
-            <UIButton href="/tickets" variant="ghost" size="sm">
-              Tickets
+            <UIButton href="#news" variant="ghost" size="sm">
+              Updates
             </UIButton>
             <button
               type="button"

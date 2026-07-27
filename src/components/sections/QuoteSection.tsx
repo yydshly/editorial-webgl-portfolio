@@ -5,8 +5,14 @@ type QuoteSectionProps = {
 };
 
 export default function QuoteSection({ section }: QuoteSectionProps) {
+  const headingId = `${section.id}-heading`;
+
   return (
-    <section id={section.id} className="section section-surface quote-section">
+    <section
+      id={section.id}
+      className="section section-surface quote-section"
+      aria-labelledby={headingId}
+    >
       <div
         className="section-motion-visual"
         data-motion="reveal"
@@ -15,7 +21,7 @@ export default function QuoteSection({ section }: QuoteSectionProps) {
       >
         <div className="section-head">
           <p className="eyebrow">Quote</p>
-          <h2>{section.title}</h2>
+          <h2 id={headingId}>{section.title}</h2>
         </div>
         <blockquote>
           <p>&ldquo;{section.quote}&rdquo;</p>

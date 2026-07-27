@@ -19,7 +19,7 @@
       "visualSubject": "person-led",
       "masterSemanticId": "field-notes:people-in-the-room:v1",
       "source": {
-        "path": "/assets/books/people-in-the-room-master.png",
+        "path": "/assets-source/books/people-in-the-room-master.png",
         "width": 1200,
         "height": 1800
       },
@@ -50,7 +50,7 @@
       "visualSubject": "scene-led",
       "masterSemanticId": "field-notes:between-the-cities:v1",
       "source": {
-        "path": "/assets/books/between-the-cities-master.png",
+        "path": "/assets-source/books/between-the-cities-master.png",
         "width": 1200,
         "height": 1800
       },
@@ -81,7 +81,7 @@
       "visualSubject": "relationship-led",
       "masterSemanticId": "field-notes:hearing-one-another:v1",
       "source": {
-        "path": "/assets/books/hearing-one-another-master.png",
+        "path": "/assets-source/books/hearing-one-another-master.png",
         "width": 1200,
         "height": 1800
       },

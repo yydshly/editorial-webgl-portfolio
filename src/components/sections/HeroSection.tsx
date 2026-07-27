@@ -8,10 +8,13 @@ type HeroSectionProps = {
 };
 
 export default function HeroSection({ section }: HeroSectionProps) {
+  const headingId = `${section.id}-heading`;
+
   return (
     <section
       id={section.id}
       className="section section-surface hero-section"
+      aria-labelledby={headingId}
     >
       <div
         className="section-motion-visual"
@@ -23,7 +26,7 @@ export default function HeroSection({ section }: HeroSectionProps) {
       >
         <div className="section-head">
           <p className="eyebrow">Home</p>
-          <h1>{section.title}</h1>
+          <h1 id={headingId}>{section.title}</h1>
         </div>
         <h2 className="hero-subtitle">{section.subtitle}</h2>
         <p className="hero-description">{section.intro}</p>

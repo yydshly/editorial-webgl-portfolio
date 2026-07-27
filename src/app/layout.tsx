@@ -6,34 +6,39 @@ import ExperienceRoot from "@/components/webgl/ExperienceRoot";
 import RuntimeProvider from "@/lib/motion/RuntimeProvider";
 import LenisProvider from "@/lib/scroll/LenisProvider";
 import { getSiteContent } from "@/content";
+import { resolveSiteUrl } from "@/lib/site/siteUrl";
 
 const { brand, seo } = getSiteContent();
+const siteUrl = resolveSiteUrl();
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://www.trevornoah.com"),
+  metadataBase: siteUrl,
   title: {
     default: seo.title,
     template: `${seo.title} | %s`,
   },
   description: seo.description,
   keywords: [
-    "Trevor Noah",
     "editorial",
-    "portfolio",
-    "entertainment",
-    "media",
+    "development archive",
+    "DOM-first",
+    "accessibility",
+    "WebGL fallback",
   ],
+  alternates: {
+    canonical: "/",
+  },
   openGraph: {
     title: seo.title,
     description: seo.description,
     type: "website",
-    url: "https://www.trevornoah.com",
+    url: siteUrl,
     siteName: brand.name,
     locale: "en_US",
     images: [
       {
         url: seo.shareImage ?? "/assets/placeholders/og-image.svg",
-        alt: "Trevor Noah Style hero image",
+        alt: "DEV-HOST-01 development archive hero image",
       },
     ],
   },
@@ -41,11 +46,10 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: seo.title,
     description: seo.description,
-    site: "@example",
   },
   robots: {
-    index: true,
-    follow: true,
+    index: false,
+    follow: false,
   },
 };
 

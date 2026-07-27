@@ -40,6 +40,9 @@
 /.tmp-*
 /tmp-*
 /scripts/generate-books-covers.mjs
+/assets-source/
+/assets-source/hero-copy/
+/assets-source/media/
 /public/assets/hero - 副本
 /public/assets/media/source
 

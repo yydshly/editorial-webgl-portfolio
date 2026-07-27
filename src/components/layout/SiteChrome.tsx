@@ -28,14 +28,7 @@ export default function SiteChrome({
       <div className="site-content">
         {children}
       </div>
-      <Footer
-        brandName={brandName}
-        footerLinks={[
-          { label: "Privacy", href: "/privacy" },
-          { label: "Terms", href: "/terms" },
-          { label: "Contact", href: "/contact" },
-        ]}
-      />
+      <Footer brandName={brandName} />
     </>
   );
 }

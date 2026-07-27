@@ -5,7 +5,9 @@
 - P4-03 About Scene is implemented, verified, human-signed, and closed.
 - P4-04 Books Scene product design is approved and documented.
 - P4-04 Batch 1 is implemented: typed content/DOM, strict asset manifest, nine development cover files, and pure progress/motion.
-- P4-04 Batch 2 runtime work has not started.
+- P4-04 Batch 2 is implemented: `BooksScene`, the three-cover renderer, responsive CPU assets, and the exact `3 textures / 3 materials / 1 geometry / 3 meshes` runtime budget.
+- P4-04 Batch 3 is implemented and verified: Books CameraIntent, formal Quote-to-Books orchestration, grouped fallback, context restoration, and removal of the Batch 2 lifecycle bridge.
+- P4-04 remains open. The next work is Batch 4 Desktop/Mobile composition tuning, human visual acceptance, and closure preparation only.
 - P4-04 authority:
   - `docs/superpowers/specs/2026-07-27-p4-04-books-scene-design.md`
   - `docs/superpowers/plans/2026-07-27-p4-04-books-scene-implementation-plan.md`
@@ -143,17 +145,14 @@ The activation request waits in the resident state while the three-cover rendere
 
 Reverse and fast-scroll must use the same final-state policy. There is no About-to-Books Scene overlap, camera blend, or direct handoff.
 
-## P4-04 interface status
+## P4-04 implemented interface status
 
-Batch 1 implemented:
+Batches 1-3 implemented:
 
 - `BookPublication`
 - `BooksAssetManifest`
 - `BooksChapterProgress`
 - `BooksSceneMotion`
-
-The remaining approved plan outputs do not exist yet:
-
 - `BooksSceneState`
 - `BooksScene`
 - `BooksWebGLRenderer`
@@ -162,7 +161,76 @@ The remaining approved plan outputs do not exist yet:
 - `QuoteBooksPolicy`
 - `booksVisualReadyResolver`
 
-The implementation plan must introduce the remaining names through focused RED → GREEN → Refactor tasks before any architecture document calls them implemented.
+`BooksScene.getCameraIntent()` returns the fixed Books intent only while the
+scene is active, anchored, resource-ready, not cached, and not disposed:
+
+```ts
+{
+  target: booksAnchorWorld,
+  positionOffset: { x: 0, y: 0, z: 0.35 },
+  fovIntent: 48,
+  depthBias: -0.15,
+  weight: 1
+}
+```
+
+Renderer resource readiness (`3 textures / 3 materials / 1 geometry`) permits
+the existing atomic registry activation. The stricter grouped fallback gate
+additionally requires the dominant active state and all three visible,
+frustum-valid, positive-area cover projections. This avoids a partially
+dominant registry mode while preventing any partial DOM/WebGL mix.
+
+The formal Director path is:
+
+```text
+About dominant
+  -> About cache
+  -> News / Quote DOM-only + global-idle
+  -> Books preload at 1.5 viewport heights
+  -> Books core activation request
+  -> all-cover resource-ready gate
+  -> activate("replace") + same-frame Books update
+  -> Books dominant CameraIntent
+  -> cache on forward/reverse exit + immediate global-idle
+```
+
+Camera arbitration preserves a still-dominant About intent when Books has
+entered only its preload distance. A ready dominant Books intent wins at
+Books. Otherwise News/Quote and Books-wait select the existing
+`GLOBAL_IDLE_CAMERA_INTENT`. News and Quote remain unregistered DOM anchors.
+
+The old `ExperienceRoot` Batch 2 manual preload/overlap/cache bridge is
+removed. `SceneDirector` is the only Books lifecycle entry point.
+
+## P4-04 Batch 3 fallback and restoration contract
+
+The three DOM cover images always remain in the document. One low-frequency
+group resolver writes the same state and opacity to all three:
+
+- `unavailable`, `loading`, `ready-inactive`, `context-lost`: opacity `1`;
+- `ready-active`: opacity `0`, only after all three WebGL covers render.
+
+No image uses `display: none`, no anchor is removed, and React does not receive
+per-frame fallback state.
+
+On context loss, `ExperienceRoot` writes `context-lost` to all three DOM
+fallbacks before disposing the Books renderer. Restore recreates exactly three
+textures, one shared geometry, and three materials from retained CPU assets.
+Fallback pixels hide only after all three restored covers render.
+
+Verified active/restore ownership:
+
+- CPU owners: exactly three active responsive cover owners, count `1` each;
+- GPU leases: `3 texture + 1 geometry + 3 material = 7`;
+- meshes: `3`;
+- expected Books draw calls: `3`.
+
+Desktop `1440x900` and Mobile `390x844` pass forward, reverse, re-entry, fast
+down/reverse, reduced-motion, unavailable, and context lost/restore coverage.
+The complete current E2E aggregate is `64 discovered / 52 passed / 11 frozen
+Hero-Media failures / 1 existing skip`. The failure set equals the frozen
+Batch 1 list, with no Books or About failure. Evidence is in
+`artifacts/p4-04-books-batch3/`.
 
 ## Invariants
 

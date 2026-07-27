@@ -26,6 +26,9 @@ export const MEDIA_MOTION_CONFIG = {
       translateXMultiplier: 0.65,
       secondaryTranslateXMultiplier: -0.26,
       translateYMultiplier: 0.8,
+      // This preserves the mobile card's independent exposure range while the
+      // Desktop composition uses its smaller, calibrated main hold scale.
+      mainScaleMultiplier: 1.036842105,
     },
   },
   phase: {
@@ -41,7 +44,7 @@ export const MEDIA_MOTION_CONFIG = {
     holdPose: {
       translateX: 130,
       translateY: 0,
-      scale: 1,
+      scale: 0.95,
       opacity: 1,
     } as const satisfies MediaLayerTransform,
     enterPose: {
@@ -65,7 +68,7 @@ export const MEDIA_MOTION_CONFIG = {
         transform: {
           translateX: 138,
           translateY: 5,
-          scale: 0.985,
+          scale: 0.955,
           opacity: 0.82,
         },
       },
@@ -74,7 +77,7 @@ export const MEDIA_MOTION_CONFIG = {
         transform: {
           translateX: 130,
           translateY: 0,
-          scale: 1,
+          scale: 0.95,
           opacity: 1,
         },
       },

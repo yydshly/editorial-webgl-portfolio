@@ -17,10 +17,10 @@ camera, and one animation loop.
 - native Three.js runtime; no R3F runtime path
 - responsive desktop/mobile assets and reduced-motion behavior
 
-The current milestone is P4-04 Books Scene Batch 2. It includes the
-`BooksScene` lifecycle, a three-cover renderer, responsive CPU/GPU resource
-ownership, and browser evidence. Books CameraIntent, formal Quote-to-Books
-orchestration, and grouped fallback/context restoration remain the next phase.
+Current release status: RC-03B sign-off preparation. P4-01 Hero, P4-02 Media,
+P4-03 About, P4-04 Books, RC-01, RC-02, and RC-03A are closed. The project is
+still a noindex demonstration RC; formal production identity, asset rights,
+domain, and operating ownership remain open.
 
 ## Requirements
 
@@ -42,3 +42,6 @@ orchestration, and grouped fallback/context restoration remain the next phase.
 Architecture decisions, rendering contracts, implementation plans, and the
 current phase handoff are stored under `docs/`. Packaged portrait and cover
 assets are development placeholders and are not production identity assets.
+DEV-HOST-01 is fictional; its timeline and the three FIELD NOTES books are
+concept content. This project provides no real purchasing, ticketing,
+publishing, awards, or person-related commercial service.

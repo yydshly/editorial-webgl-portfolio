@@ -491,9 +491,9 @@ async function seekAboutProgress(
   return page.evaluate((requested) => {
     const probe = (
       window as Window & {
-        __trevorNoahWebGLProbe?: { snapshot(): AboutProbeSnapshot };
+        __editorialWebGLProbe?: { snapshot(): AboutProbeSnapshot };
       }
-    ).__trevorNoahWebGLProbe;
+    ).__editorialWebGLProbe;
     const snapshot = probe?.snapshot();
     const scene = snapshot?.diagnostics.sceneSnapshots["about-scene"];
     const about = snapshot?.composition?.about;
@@ -632,9 +632,9 @@ async function waitForProbe(page: Page): Promise<void> {
         () =>
           typeof (
             window as Window & {
-              __trevorNoahWebGLProbe?: { snapshot(): unknown };
+              __editorialWebGLProbe?: { snapshot(): unknown };
             }
-          ).__trevorNoahWebGLProbe?.snapshot === "function",
+          ).__editorialWebGLProbe?.snapshot === "function",
       ),
     )
     .toBe(true);
@@ -644,9 +644,9 @@ async function getProbeSnapshot(page: Page): Promise<AboutProbeSnapshot> {
   return page.evaluate(() => {
     const probe = (
       window as Window & {
-        __trevorNoahWebGLProbe?: { snapshot(): AboutProbeSnapshot };
+        __editorialWebGLProbe?: { snapshot(): AboutProbeSnapshot };
       }
-    ).__trevorNoahWebGLProbe;
+    ).__editorialWebGLProbe;
     if (!probe) {
       throw new Error("WebGL probe is unavailable.");
     }
