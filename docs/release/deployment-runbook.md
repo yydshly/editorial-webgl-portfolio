@@ -43,3 +43,12 @@ file is emitted in `.next/static`.
 Until these fields are assigned, Demo RC remains the only permitted release
 level. No domain, platform, owner, monitoring service, or rollback mechanism
 may be invented in deployment configuration.
+
+## RC-04 dry-run record
+
+The Demo RC build was validated from the isolated `NEXT_DIST_DIR=.tmp/rc04-build`
+output with `next start` on port `3338`. The six-test production smoke suite
+passed, including direct `#books` navigation, full section order, fast forward
+and reverse travel, reduced motion, WebGL unavailable, context restore,
+security headers, private diagnostics, single Canvas ownership, and a real 404.
+This is a local dry-run only; it is not a deployment authorization.

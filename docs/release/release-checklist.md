@@ -53,3 +53,27 @@ The latest complete RC run is green. A separate targeted Media mobile sample
 once measured `0.2790` against the existing `0.28` boundary; the complete
 run passed without any composition change, so this is retained as an
 observability note rather than a new RC-03B defect.
+
+## RC-04 Demo RC decision
+
+- [x] Demo RC technical gate passed on `feat/rc04-final-regression`.
+- [x] Demo RC remains explicitly fictional, noindex/nofollow, and limited to
+  local, private-preview, or password-protected distribution.
+- [x] Reproducible build command: `NEXT_DIST_DIR=.tmp/rc04-build pnpm build`.
+- [x] Production smoke command: `PLAYWRIGHT_PORT=3338 pnpm exec playwright
+  test -c playwright.production.config.ts` against `next start`.
+- [x] Rollback for a private preview is replacement with the last known-good
+  build directory/release identifier; no public deployment was performed.
+- [x] Demo RC metadata and checksums are generated under the ignored RC-04
+  evidence directory; they contain no private source assets or logs.
+
+### Dependency audit decision
+
+`pnpm audit --prod --json` reports 0 critical, 3 high, and 1 moderate
+transitive findings: PostCSS through Next (`GHSA-6g55-p6wh-862q`,
+`GHSA-r28c-9q8g-f849`, `GHSA-qx2v-qp2m-jg93`) and optional Sharp/libvips
+(`GHSA-f88m-g3jw-g9cj`). The current app has no upload or attacker-controlled
+image/CSS pipeline; PostCSS is build-time and browser source maps are off,
+while Sharp processes only repository-controlled local images. No automatic
+major upgrade was performed. This is a Public Production hardening item and
+must be re-audited before launch; it does not block the controlled Demo RC.

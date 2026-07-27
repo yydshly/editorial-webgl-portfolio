@@ -39,3 +39,10 @@ and commercial-use evidence, releases, production OG art, signed art review,
 approved privacy/copyright/disclosure text, robots/index approval, and named
 hosting, monitoring, rollback, release, and emergency-offline owners. Until
 these gates are complete, this is not a public production release.
+
+## RC-04 decision
+
+The controlled Demo RC is technically ready after final regression and
+production smoke. This means it may be shown through the allowed channels
+above; it does not change the Public Production decision or authorize a public
+domain, indexing, or deployment.

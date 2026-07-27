@@ -6,7 +6,7 @@
 **Goal:** Produce a fully adjudicated, verified, mergeable Release Candidate
 without adding another spatial chapter.
 
-**Authority:**  
+**Authority:**
 `docs/superpowers/specs/2026-07-27-release-candidate-phase4-closure.md`
 
 ## Global constraints
@@ -374,3 +374,19 @@ deploy the project.
 **Next executable plan section: RC-04 final regression and release decision
 preparation.** It may collect approvals and verify the locked baseline only;
 it must not reopen signed Scene composition or authorize deployment.
+
+## RC-04 completion record
+
+- [x] Reinstall from the lockfile and run lint, typecheck, 307 unit tests, and
+  an isolated production build.
+- [x] Run the full no-omission RC E2E suite: 85 discovered / 78 passed / 0
+  failed / 7 opt-in skipped / 0 omitted.
+- [x] Run isolated `next start` production smoke: 6 passed, including direct
+  hash, route order, normal/reverse/fast/reduced motion, fallback, context
+  restore, diagnostics isolation, headers, single ownership, and 404.
+- [x] Record dependency audit findings without automatic major upgrades.
+- [x] Prepare Demo RC build metadata/checksums without private source assets.
+
+**Integration decision remains external:** push this branch and create a PR,
+keep it for a password-protected Demo RC, or merge locally only after explicit
+approval. Public deployment is not authorized.

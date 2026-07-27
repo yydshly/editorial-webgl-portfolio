@@ -642,3 +642,18 @@ emergency-offline owners are still unassigned. `NEXT_PUBLIC_SITE_URL` therefore
 uses the safe development fallback and must not be changed to a guessed domain.
 RC-04 input is the final technical/regression and release-owner decision pass;
 it may adjudicate these gates but must not reopen signed Scene composition.
+
+## 20. RC-04 final regression and Demo RC
+
+RC-04 completed the final technical regression without changing Scene,
+Camera, Renderer, or Runtime behavior. Node `22.15.0`, pnpm `11.9.0`, package
+version `0.1.0`, lint/typecheck/unit/build, the 85-test RC suite, and the six
+test isolated production smoke suite are recorded in the RC-04 release docs.
+The reproducible Demo RC build is `0.4.0-rc.1` as a release label while the
+package version remains `0.1.0`.
+
+Demo RC is ready for local, private-preview, or password-protected use only.
+Public Production is not released and remains blocked by formal assets/rights,
+real domain/host configuration, named operations owners, and final legal/art
+approval. The next action is an explicit PR/merge decision; do not deploy or
+merge automatically.

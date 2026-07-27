@@ -335,6 +335,15 @@ may verify the locked technical baseline and collect owner approvals; it may
 not modify Hero, Media, About, Books composition, Runtime, Camera,
 SceneDirector, or Renderer, and it may not merge or deploy.
 
+## RC-04 final regression result
+
+RC-04 final regression passed on `feat/rc04-final-regression`: 307 unit tests,
+the no-omission 85-test RC suite (`78 passed / 0 failed / 7 opt-in skipped`),
+and six isolated `next start` production smoke tests. The Demo RC is ready for
+controlled distribution only. Public Production remains blocked by the RC-03B
+asset, identity, domain, and operations gates. The next decision is PR or
+merge preparation; no merge or deployment has occurred.
+
 ## Superseded P4-04 Batch 1 entry (historical)
 
 The following Batch 1 instructions are retained only as phase history and are
