@@ -32,3 +32,53 @@ evidence is **unknown / not approved**; no commercial-use right is inferred.
 
 The five tracked master PNGs total 12,633,223 B under `assets-source/`; runtime
 public assets are approximately 1,005,795 B.
+
+## Approved asset replacement procedure
+
+Replacing an approved asset is a controlled **file plus configuration** change;
+it is not a Three.js Runtime, Camera, SceneDirector, Renderer, or lifecycle
+change.
+
+1. Keep the approved master, source record, licence, release, and provenance
+   evidence outside `public/` (and do not commit private source material).
+   `public/` contains only browser-runtime derivatives such as WebP, SVG, and
+   their manifests.
+2. Generate and replace the required responsive runtime files in the relevant
+   `public/assets/<chapter>/` directory. Do not retain the old filename merely
+   to avoid updating the manifest: paths should describe the approved asset.
+3. Update the related manifest whenever the path, pixel dimensions, responsive
+   crop, focal point, subject bounds, or asset status changed. If an image
+   changes only in compression with identical framing, only its file path and
+   dimensions may need updating; a new framing always requires crop/focal
+   review.
+4. Update `src/content/repository.ts`, `src/app/layout.tsx`, the site identity
+   disclosure, alt text, and OG metadata if the replacement also changes the
+   published person, brand, title, copy, or social-share identity.
+5. Record the final source, commercial-use evidence, release status, trademark
+   risk, attribution, owner, and approval-evidence path in the row above.
+   `unknown / not approved` remains the required status when evidence is
+   missing.
+
+### Chapter-specific configuration
+
+| Chapter | Replace runtime files | Update configuration | Required follow-up |
+| --- | --- | --- | --- |
+| Hero | `public/assets/hero/*-{desktop,mobile}.webp` | `hero-manifest.json`, including `foregroundCrop` when the subject moves | Hero Desktop/Mobile art review; confirm the foreground crop retains the intended hand/microphone/subject framing. |
+| Media | `public/assets/media/media-stage-*` and `media-studio-*` | `media-manifest.json` responsive crop/focal data | Media Desktop/compact/mobile review; retain Main/Secondary hierarchy and no DOM overlap. |
+| About | `public/assets/about/about-portrait-{desktop,mobile}.webp` | `about-manifest.json` crop, focal point, and subject bounds | About-only Desktop/Mobile art review. |
+| Books | `public/assets/books/*-{desktop,mobile}.webp` | `books-manifest.json`; retain the ordered `primary`, `secondary-left`, `secondary-right` tuple and 2:3 ratio | Books-only Desktop/Mobile art review. |
+| OG / identity | `public/assets/placeholders/og-image.svg` or approved replacement | `src/app/layout.tsx` metadata and any affected content/disclosure | Verify title, description, social preview, noindex policy, and no misleading real-person/commercial claims. |
+
+After each chapter replacement, run focused manifest tests first, then:
+
+```powershell
+pnpm lint
+pnpm typecheck
+pnpm test
+pnpm build
+pnpm test:e2e:rc
+```
+
+Do not weaken visual tests or alter Camera/Runtime parameters just to fit a new
+image. Correct the approved image derivative and its manifest configuration
+first, then reopen only the affected chapter's art review.

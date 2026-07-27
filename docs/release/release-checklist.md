@@ -25,6 +25,9 @@ still visitor-accessible.
 - [ ] Host, monitoring, cache invalidation, rollback, release and emergency-offline owners are named.
 - [ ] robots/index policy is re-approved for the real domain.
 - [ ] RC-04 final regression and explicit merge/deployment decision are complete.
+- [ ] Each replacement visual asset has completed the documented file and
+  manifest update procedure in `production-asset-inventory.md`, followed by
+  the affected chapter's focused art review.
 
 | Class | Current result |
 | --- | --- |

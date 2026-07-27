@@ -22,6 +22,15 @@ P4-03 About, P4-04 Books, RC-01, RC-02, and RC-03A are closed. The project is
 still a noindex demonstration RC; formal production identity, asset rights,
 domain, and operating ownership remain open.
 
+## Demo
+
+https://github.com/user-attachments/assets/9cf7d8f6-c6c7-4477-93a8-2e4e6fd102af
+
+[Download the original 1440 x 900 WebM recording](docs/demo/editorial-webgl-demo.webm).
+The demo is a fictional development experiment using development imagery; it
+does not represent a real person, publisher, ticketing, purchasing, or
+commercial service.
+
 ## Requirements
 
 - Node.js 22 or later
