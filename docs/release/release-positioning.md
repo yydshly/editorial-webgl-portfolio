@@ -32,6 +32,15 @@ present and no real commercial flow is implied. Local development, private
 preview links, and password-protected reviews are allowed. A public noindex
 portfolio URL requires a separate release-owner decision.
 
+### Temporary public Demo RC decision
+
+On 2026-07-28, the release owner approved a directly accessible, noindex Demo
+RC at `https://editorial-webgl-portfolio.vercel.app/`. It is a Vercel Hobby
+production-domain alias for the `main` branch, not a declaration of Public
+Production readiness. The Vercel-generated deployment and branch URLs remain
+access-protected and are not public sharing links. The fictional disclosure,
+noindex/nofollow policy, and all Public Production blockers continue to apply.
+
 ### Public Production
 
 Public Production requires approved identity/domain, licensed assets, source
@@ -42,7 +51,6 @@ these gates are complete, this is not a public production release.
 
 ## RC-04 decision
 
-The controlled Demo RC is technically ready after final regression and
-production smoke. This means it may be shown through the allowed channels
-above; it does not change the Public Production decision or authorize a public
-domain, indexing, or deployment.
+The Demo RC is technically ready after final regression and production smoke.
+The temporary public Demo RC decision above authorizes that one noindex Vercel
+domain; it does not authorize indexing or change the Public Production decision.

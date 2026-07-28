@@ -657,3 +657,27 @@ Public Production is not released and remains blocked by formal assets/rights,
 real domain/host configuration, named operations owners, and final legal/art
 approval. The next action is an explicit PR/merge decision; do not deploy or
 merge automatically.
+
+## 21. Temporary Demo RC archive — 2026-07-28
+
+All P4 and RC engineering work is closed and merged to `main`. The release
+owner approved a directly accessible, noindex Demo RC at:
+
+```text
+https://editorial-webgl-portfolio.vercel.app/
+```
+
+It is deployed by Vercel from `main` merge commit `84a4c02`. The stable Vercel
+production-domain alias is the shareable URL; Vercel-generated deployment and
+branch URLs remain authentication-protected and are not public share links.
+
+Public Production is still **not** approved. Development assets, asset rights
+and provenance, final public identity/OG, real canonical domain, and named
+monitoring/rollback/release owners remain open. The noindex/nofollow robots,
+safe development canonical, and fictional-project disclosure must stay in
+place until those conditions are deliberately reopened and approved.
+
+This archive addendum supersedes earlier historical directions in this file
+that said no merge or deployment had occurred. No further engineering work is
+required for the temporary Demo RC; resume only for approved asset replacement,
+formal Public Production readiness, or a separately scoped feature.
