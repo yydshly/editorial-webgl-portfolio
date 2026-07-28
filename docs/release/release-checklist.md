@@ -7,12 +7,13 @@
 - [x] No real purchase, ticketing, publishing, award, ISBN, or person-service flow exists.
 - [x] `noindex, nofollow` remains active.
 - [x] RC-03A technical build, E2E, production smoke, headers, and diagnostics gates pass.
-- [ ] Release owner chooses local, private-preview, or password-protected preview channel.
+- [x] Release owner approved the temporary public noindex Demo RC at
+  `https://editorial-webgl-portfolio.vercel.app/` on 2026-07-28.
 
 Allowed before public production approval: local development, private preview,
-and password-protected review links with the development disclaimer. A public
-noindex portfolio URL is not approved by default because development assets are
-still visitor-accessible.
+password-protected review links, and the explicitly approved public noindex
+Vercel Demo RC above, all with the development disclaimer. Other public URLs
+are not approved by default because development assets are visitor-accessible.
 
 ## Public Production gate
 
@@ -24,7 +25,7 @@ still visitor-accessible.
 - [ ] Privacy, copyright, and fictional-development disclosures are approved.
 - [ ] Host, monitoring, cache invalidation, rollback, release and emergency-offline owners are named.
 - [ ] robots/index policy is re-approved for the real domain.
-- [ ] RC-04 final regression and explicit merge/deployment decision are complete.
+- [x] RC-04 final regression, merge, and temporary Demo RC deployment decision are complete.
 - [ ] Each replacement visual asset has completed the documented file and
   manifest update procedure in `production-asset-inventory.md`, followed by
   the affected chapter's focused art review.
@@ -65,8 +66,8 @@ observability note rather than a new RC-03B defect.
 - [x] Reproducible build command: `NEXT_DIST_DIR=.tmp/rc04-build pnpm build`.
 - [x] Production smoke command: `PLAYWRIGHT_PORT=3338 pnpm exec playwright
   test -c playwright.production.config.ts` against `next start`.
-- [x] Rollback for a private preview is replacement with the last known-good
-  build directory/release identifier; no public deployment was performed.
+- [x] Rollback for the temporary public Demo RC is Vercel promotion of the
+  last known-good deployment or a Git revert followed by automatic redeploy.
 - [x] Demo RC metadata and checksums are generated under the ignored RC-04
   evidence directory; they contain no private source assets or logs.
 

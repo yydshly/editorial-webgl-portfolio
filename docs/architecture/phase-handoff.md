@@ -1,5 +1,12 @@
 # Project Handoff
 
+> **Current archive addendum — 2026-07-28:** All P4 and RC engineering phases
+> are closed and merged to `main`. A directly accessible, noindex Demo RC is
+> deployed at `https://editorial-webgl-portfolio.vercel.app/` from `84a4c02`.
+> This supersedes earlier historical instructions that prohibited deployment.
+> Public Production remains blocked by approved identity/assets/rights, a real
+> canonical domain, and named operations ownership.
+
 ## Current phase: Release Candidate / Phase 4 Closure
 
 P4-03 About Scene and P4-04 Books Scene are closed. P4-04 Batches 1-4 are

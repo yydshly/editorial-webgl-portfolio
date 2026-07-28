@@ -17,12 +17,14 @@ camera, and one animation loop.
 - native Three.js runtime; no R3F runtime path
 - responsive desktop/mobile assets and reduced-motion behavior
 
-Current release status: RC-03B sign-off preparation. P4-01 Hero, P4-02 Media,
-P4-03 About, P4-04 Books, RC-01, RC-02, and RC-03A are closed. The project is
-still a noindex demonstration RC; formal production identity, asset rights,
-domain, and operating ownership remain open.
+Current release status: all P4 and RC engineering phases are closed. A public,
+noindex Demo RC is live; formal production identity, asset rights, canonical
+domain, and operating ownership remain open. This is not a commercial
+production release.
 
 ## Demo
+
+Live Demo RC: [editorial-webgl-portfolio.vercel.app](https://editorial-webgl-portfolio.vercel.app/)
 
 https://github.com/user-attachments/assets/9cf7d8f6-c6c7-4477-93a8-2e4e6fd102af
 
